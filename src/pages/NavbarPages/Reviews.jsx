@@ -25,10 +25,17 @@ const Reviews = () => {
   };
 
   return (
-    <div className="py-16 bg-base-200">
-      <h1 className="text-4xl font-bold text-center text-primary mb-10">
-        What People Say About RedPulseBD
-      </h1>
+    <div className="pt-16 bg-base-200">
+      <div className="flex justify-between items-center px-6 lg:px-16 mb-10">
+  <h1 className="text-4xl font-bold text-primary">
+    What People Say About RedPulseBD
+  </h1>
+
+  <button className="btn btn-primary text-black" onClick={openModal}>
+    Write a Review
+  </button>
+</div>
+
 
       {/* Reviews Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-6 lg:px-16">
@@ -60,13 +67,6 @@ const Reviews = () => {
             <p className="mt-4 text-sm text-neutral">{review.description}</p>
           </div>
         ))}
-      </div>
-
-      {/* Write Review Button */}
-      <div className="text-center mt-10 mb-5">
-        <button className="btn btn-primary text-black" onClick={openModal}>
-          Write a Review
-        </button>
       </div>
 
       {/* Review Modal */}

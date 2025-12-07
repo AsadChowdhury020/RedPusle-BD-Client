@@ -15,8 +15,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-base-200 text-base-content mt-16">
-      
+    <footer className="bg-base-200 text-base-content mt-16 border-t border-secondary">
       {/* MATCH REVIEW WIDTH */}
       <div className="px-6 lg:px-16 py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
