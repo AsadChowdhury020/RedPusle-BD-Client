@@ -1,182 +1,275 @@
-import { Link, useLocation, useNavigate } from 'react-router'
-import { FcGoogle } from 'react-icons/fc'
-import useAuth from '../../hooks/useAuth'
-import { toast } from 'react-hot-toast'
-import { TbFidgetSpinner } from 'react-icons/tb'
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
+import useAuth from "../../hooks/useAuth";
+import useAxios from "../../hooks/useAxios";
 
+const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const SignUp = () => {
-  const { createUser, updateUserProfile, signInWithGoogle, loading } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const from = location.state || '/'
+  const { upazilasData, districtsData } = useLoaderData();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const [loading, setLoading] = useState(false);
+  // const [avatarURL, setAvatarURL] = useState("");
+  const [districts, setDistricts] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
 
-  // form submit handler
-  const handleSubmit = async event => {
-    event.preventDefault()
-    const form = event.target
-    const name = form.name.value
-    const email = form.email.value
-    const password = form.password.value
+  const districtsList = districtsData[2].data.sort((a, b) =>
+    a.name.localeCompare(b.name));
+  const upazilasList = upazilasData[2].data.sort((a, b) =>
+    a.name.localeCompare(b.name));
+
+  useEffect(() => {
+    setDistricts(districtsList);
+    setUpazilas(upazilasList);
+  }, [districtsList, upazilasList]);
+
+  // console.log(upazilas);
+  const selectedDistrict = watch("district");
+
+  const { createUser, updateUserProfile } = useAuth();
+  const axiosInstance = useAxios();
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from || "/";
+
+  useEffect(() => {
+    const selected = districts.find((d) => d.name === selectedDistrict);
+    if (selected) {
+      const filtered = upazilas.filter((u) => u.district_id === selected.id);
+      setFilteredUpazilas(filtered);
+    } else {
+      setFilteredUpazilas([]);
+    }
+  }, [selectedDistrict, districts, upazilas]);
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+
+    // ✅ Upload avatar inside submit
+    const image = data.avatar[0];
+    const formData = new FormData();
+    formData.append("image", image);
+
+    let imageUrl = "";
 
     try {
-      //2. User Registration
-      const result = await createUser(email, password)
-
-      //3. Save username & profile photo
-      await updateUserProfile(
-        name,
-        'https://lh3.googleusercontent.com/a/ACg8ocKUMU3XIX-JSUB80Gj_bYIWfYudpibgdwZE1xqmAGxHASgdvCZZ=s96-c'
-      )
-      console.log(result)
-
-      navigate(from, { replace: true })
-      toast.success('Signup Successful')
+      const res = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_image_upload_key
+        }`,
+        formData
+      );
+      imageUrl = res.data.data.url;
     } catch (err) {
-      console.log(err)
-      toast.error(err?.message)
+      console.error("Image upload failed:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Upload Failed",
+        text: "Failed to upload avatar image.",
+      });
+      setLoading(false);
+      return;
     }
-  }
 
-  // Handle Google Signin
-  const handleGoogleSignIn = async () => {
+    // ✅ Proceed with user creation
     try {
-      //User Registration using google
-      await signInWithGoogle()
+      await createUser(data.email, data.password);
 
-      navigate(from, { replace: true })
-      toast.success('Signup Successful')
-    } catch (err) {
-      console.log(err)
-      toast.error(err?.message)
+      const userInfo = {
+        name: data.name,
+        email: data.email,
+        bloodGroup: data.bloodGroup,
+        district: data.district,
+        upazila: data.upazila,
+        role: "donor",
+        status: "active",
+        avatar: imageUrl,
+        created_at: new Date().toISOString(),
+        last_log_in: new Date().toISOString(),
+      };
+      await axiosInstance.post("/users", userInfo);
+
+      await updateUserProfile(data.name, imageUrl).then(() => {
+        navigate(from)
+      })
+
+
+      Swal.fire({
+        title: "Account Created!",
+        text: "You have successfully signed up.",
+        icon: "success",
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Signup Failed",
+        text: error.message || "Something went wrong",
+      });
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
   return (
-    <div className='flex justify-center items-center min-h-screen bg-white'>
-      <div className='flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900'>
-        <div className='mb-8 text-center'>
-          <h1 className='my-3 text-4xl font-bold'>Sign Up</h1>
-          <p className='text-sm text-gray-400'>Welcome to PlantNet</p>
-        </div>
-        <form
-          onSubmit={handleSubmit}
-          noValidate=''
-          action=''
-          className='space-y-6 ng-untouched ng-pristine ng-valid'
-        >
-          <div className='space-y-4'>
-            <div>
-              <label htmlFor='email' className='block mb-2 text-sm'>
-                Name
-              </label>
-              <input
-                type='text'
-                name='name'
-                id='name'
-                placeholder='Enter Your Name Here'
-                className='w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900'
-                data-temp-mail-org='0'
-              />
-            </div>
-            {/* Image */}
-            <div>
-              <label
-                htmlFor='image'
-                className='block mb-2 text-sm font-medium text-gray-700'
-              >
-                Profile Image
-              </label>
-              <input
-                name='image'
-                type='file'
-                id='image'
-                accept='image/*'
-                className='block w-full text-sm text-gray-500
-      file:mr-4 file:py-2 file:px-4
-      file:rounded-md file:border-0
-      file:text-sm file:font-semibold
-      file:bg-lime-50 file:text-lime-700
-      hover:file:bg-lime-100
-      bg-gray-100 border border-dashed border-lime-300 rounded-md cursor-pointer
-      focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-lime-400
-      py-2'
-              />
-              <p className='mt-1 text-xs text-gray-400'>
-                PNG, JPG or JPEG (max 2MB)
-              </p>
-            </div>
-            <div>
-              <label htmlFor='email' className='block mb-2 text-sm'>
-                Email address
-              </label>
-              <input
-                type='email'
-                name='email'
-                id='email'
-                required
-                placeholder='Enter Your Email Here'
-                className='w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900'
-                data-temp-mail-org='0'
-              />
-            </div>
-            <div>
-              <div className='flex justify-between'>
-                <label htmlFor='password' className='text-sm mb-2'>
-                  Password
-                </label>
-              </div>
-              <input
-                type='password'
-                name='password'
-                autoComplete='new-password'
-                id='password'
-                required
-                placeholder='*******'
-                className='w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900'
-              />
-            </div>
-          </div>
+    <div className="min-h-screen flex items-center justify-center py-16">
+      <div className="w-full max-w-xl p-8 space-y-6 rounded-xl shadow-md shadow-secondary border border-secondary">
+        <h2 className="text-2xl font-bold text-center text-primary">
+          SignUp to RedPulseBD
+        </h2>
 
-          <div>
-            <button
-              type='submit'
-              className='bg-lime-500 w-full rounded-md py-3 text-white'
-            >
-              {loading ? (
-                <TbFidgetSpinner className='animate-spin m-auto' />
-              ) : (
-                'Continue'
-              )}
-            </button>
-          </div>
-        </form>
-        <div className='flex items-center pt-4 space-x-1'>
-          <div className='flex-1 h-px sm:w-16 dark:bg-gray-700'></div>
-          <p className='px-3 text-sm dark:text-gray-400'>
-            Signup with social accounts
-          </p>
-          <div className='flex-1 h-px sm:w-16 dark:bg-gray-700'></div>
-        </div>
-        <div
-          onClick={handleGoogleSignIn}
-          className='flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer'
-        >
-          <FcGoogle size={32} />
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+          <input
+            type="text"
+            placeholder="Full Name"
+            className="input input-bordered w-full"
+            {...register("name", { required: "Name is required" })}
+          />
+          {errors.name && (
+            <p className="text-sm text-red-500">{errors.name.message}</p>
+          )}
 
-          <p>Continue with Google</p>
-        </div>
-        <p className='px-6 text-sm text-center text-gray-400'>
-          Already have an account?{' '}
-          <Link
-            to='/login'
-            className='hover:underline hover:text-lime-500 text-gray-600'
+          <input
+            type="email"
+            placeholder="Email"
+            className="input input-bordered w-full"
+            {...register("email", { required: "Email is required" })}
+          />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
+
+          <input
+            type="file"
+            className="file-input file-input-bordered w-full"
+            {...register("avatar", { required: "Avatar is required" })}
+          />
+          {errors.avatar && (
+            <p className="text-sm text-red-500">{errors.avatar.message}</p>
+          )}
+
+          <select
+            className="select select-bordered w-full"
+            {...register("bloodGroup", { required: "Blood group is required" })}
           >
-            Login
-          </Link>
-          .
-        </p>
+            <option value="">Select Blood Group</option>
+            {bloodGroups.map((bg) => (
+              <option key={bg} value={bg}>
+                {bg}
+              </option>
+            ))}
+          </select>
+          {errors.bloodGroup && (
+            <p className="text-sm text-red-500">{errors.bloodGroup.message}</p>
+          )}
+
+          {/* District Dropdown */}
+          <select
+            className="select select-bordered w-full"
+            {...register("district", { required: "District is required" })}
+          >
+            <option value="">Select District</option>
+            {districts.map((d) => (
+              <option key={d.id} value={d.name}>
+                {d.name}
+              </option>
+            ))}
+          </select>
+          {errors.district && (
+            <p className="text-sm text-red-500">{errors.district.message}</p>
+          )}
+
+          {/* Upazila Dropdown */}
+          <select
+            className="select select-bordered w-full"
+            {...register("upazila", { required: "Upazila is required" })}
+            // disabled={!filteredUpazilas.length}
+          >
+            <option value="">Select Upazila</option>
+            {filteredUpazilas.map((u) => (
+              <option key={u.id} value={u.name}>
+                {u.name}
+              </option>
+            ))}
+          </select>
+          {errors.upazila && (
+            <p className="text-sm text-red-500">{errors.upazila.message}</p>
+          )}
+
+          <input
+            type="password"
+            placeholder="Password"
+            className="input input-bordered w-full"
+            {...register("password", {
+              required: "Password is required",
+              minLength: { value: 6, message: "Minimum 6 characters required" },
+              pattern: {
+                value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                message:
+                  "Password must contain at least 1 uppercase and 1 lowercase letter",
+              },
+            })}
+          />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password.message}</p>
+          )}
+
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            className="input input-bordered w-full"
+            {...register("confirm_password", {
+              validate: (value) =>
+                value === watch("password") || "Passwords do not match",
+            })}
+          />
+          {errors.confirm_password && (
+            <p className="text-sm text-red-500">
+              {errors.confirm_password.message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="btn btn-primary w-full mt-2"
+            disabled={loading}
+          >
+            {loading ? "Signing up..." : "Sign Up"}
+          </button>
+          <p className="text-sm text-center mt-2">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-blue-600 underline hover:text-blue-800"
+            >
+              Go to Log In
+            </Link>
+          </p>
+          <p className="text-sm text-center">
+            Do not want to create an account now?{" "}
+            <Link
+              to="/"
+              className="text-blue-600 underline hover:text-blue-800"
+            >
+              Go to Home
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;

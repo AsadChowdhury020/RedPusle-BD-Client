@@ -39,7 +39,7 @@ const Banner = () => {
 
           {/* Search Donors Button */}
           <button
-            onClick={() => navigate("/search-page")}
+            onClick={() => navigate("/search")}
             className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-base-100 text-primary font-semibold rounded-full shadow transition-all cursor-pointer"
           >
            <SlMagnifierAdd />

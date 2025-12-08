@@ -39,8 +39,8 @@ export const router = createBrowserRouter([
       {
         path: "/reviews",
         element: <Reviews />,
-        loader: () => {
-          return fetch("./reviews.json");
+        loader: async () => {
+          return await fetch("/reviews.json").then((res) => res.json());
         },
       },
       {
@@ -49,12 +49,26 @@ export const router = createBrowserRouter([
         // loader: () => {
         //   return fetch("./whyChoose.json");
         // },
-        loader: () => fetch("/whyChoose.json").then((res) => res.json()),
+        // loader: () => fetch("/whyChoose.json").then((res) => res.json()),
+      },
+      { path: "/login", element: <Login /> },
+      {
+        path: "/signup",
+        element: <SignUp />,
+        loader: async () => {
+          const districtsData = await fetch("/districts.json").then((res) =>
+            res.json()
+          );
+          const upazilasData = await fetch("/upazilas.json").then((res) =>
+            res.json()
+          );
+
+          return { districtsData, upazilasData };
+        },
       },
     ],
   },
-  { path: "/login", element: <Login /> },
-  { path: "/signup", element: <SignUp /> },
+
   { path: "/about-us", element: <AboutUs /> },
   { path: "/blogs", element: <Blogs /> },
   { path: "/donation-requests", element: <DonationRequests /> },
