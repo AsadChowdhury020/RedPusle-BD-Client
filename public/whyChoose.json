@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Fast Donor Matching",
+    "description": "We instantly connect patients with the nearest compatible donors.",
+    "icon": "FiZap"
+  },
+  {
+    "title": "Verified Donor Profiles",
+    "description": "Every donor is identity-checked and blood group verified for safety.",
+    "icon": "FaUserCheck"
+  },
+  {
+    "title": "Easy Blood Search System",
+    "description": "Search blood groups quickly with a clean, user-friendly interface.",
+    "icon": "FiSearch"
+  },
+  {
+    "title": "24/7 Availability",
+    "description": "Access donors anytime — emergencies don’t wait, and neither do we.",
+    "icon": "MdAccessTime"
+  },
+  {
+    "title": "Community-Driven Platform",
+    "description": "Built for Bangladesh, powered by donors who genuinely care.",
+    "icon": "FaUsers"
+  },
+  {
+    "title": "Secure & Privacy-Focused",
+    "description": "We protect donor information with strict privacy measures.",
+    "icon": "RiShieldCheckFill"
+  },
+  {
+    "title": "Real-Time Notifications",
+    "description": "Donors receive alerts instantly when they match a request.",
+    "icon": "MdNotificationsActive"
+  },
+  {
+    "title": "Free to Use",
+    "description": "RedPulseBD is completely free — no fees or hidden conditions.",
+    "icon": "FaRegSmileBeam"
+  },
+  {
+    "title": "Saves Lives Every Day",
+    "description": "Your donation directly helps patients in critical times.",
+    "icon": "FaHeartbeat"
+  }
+]

@@ -1,4 +1,4 @@
-import Home from "../pages/Home/Home";
+import Home from "../pages/Home/Home/Home";
 import ErrorPage from "../pages/ErrorPage";
 import Login from "../pages/Login/Login";
 import SignUp from "../pages/SignUp/SignUp";
@@ -20,6 +20,7 @@ import DonationRequests from "../pages/NavbarPages/DonationRequests";
 import Funding from "../pages/NavbarPages/Funding";
 import Reviews from "../pages/NavbarPages/Reviews";
 import Search from "../pages/NavbarPages/Search";
+import WhyChoose from "../pages/Home/WhyChoose/WhyChoose";
 
 export const router = createBrowserRouter([
   {
@@ -36,12 +37,20 @@ export const router = createBrowserRouter([
         element: <PlantDetails />,
       },
       {
-    path: "/reviews",
-    element: <Reviews />,
-    loader: () => {
-      return fetch("./reviews.json");
-    },
-  },
+        path: "/reviews",
+        element: <Reviews />,
+        loader: () => {
+          return fetch("./reviews.json");
+        },
+      },
+      {
+        path: "/why-choose",
+        element: <WhyChoose />,
+        // loader: () => {
+        //   return fetch("./whyChoose.json");
+        // },
+        loader: () => fetch("/whyChoose.json").then((res) => res.json()),
+      },
     ],
   },
   { path: "/login", element: <Login /> },
