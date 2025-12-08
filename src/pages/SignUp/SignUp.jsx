@@ -5,6 +5,8 @@ import Swal from "sweetalert2";
 import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import useAxios from "../../hooks/useAxios";
+import saveOrUpdateUser from "../../utils/saveOrUpdateUser";
+import { FcGoogle } from "react-icons/fc";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const SignUp = () => {
@@ -34,7 +36,7 @@ const SignUp = () => {
   // console.log(upazilas);
   const selectedDistrict = watch("district");
 
-  const { createUser, updateUserProfile } = useAuth();
+  const { createUser, updateUserProfile,signInWithGoogle } = useAuth();
   const axiosInstance = useAxios();
 
   const location = useLocation();
@@ -123,6 +125,35 @@ const SignUp = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      const { user } = await signInWithGoogle();
+
+      const userData = {
+        name: user?.displayName,
+        email: user?.email,
+        image: user?.photoURL,
+      };
+
+      await saveOrUpdateUser(userData);
+
+      Swal.fire({
+        icon: "success",
+        title: "Login Successful!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      navigate(from, { replace: true });
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "Google Login Failed",
+        text: err.message,
+      });
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center py-16">
       <div className="w-full max-w-xl p-8 space-y-6 rounded-xl shadow-md shadow-secondary border border-secondary">
@@ -267,6 +298,15 @@ const SignUp = () => {
             </Link>
           </p>
         </form>
+        <h3 className="text-primary text-center text-xl font-bold">OR</h3>
+        <div
+          onClick={handleGoogleSignIn}
+          className="btn btn-primary mt-2 w-full"
+        >
+          <FcGoogle size={32} />
+
+          <p>Continue with Google</p>
+        </div>
       </div>
     </div>
   );
