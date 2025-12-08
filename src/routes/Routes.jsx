@@ -21,6 +21,7 @@ import Funding from "../pages/NavbarPages/Funding";
 import Reviews from "../pages/NavbarPages/Reviews";
 import Search from "../pages/NavbarPages/Search";
 import WhyChoose from "../pages/Home/WhyChoose/WhyChoose";
+import AllUsers from "../pages/Dashboard/Admin/AllUsers";
 
 export const router = createBrowserRouter([
   {
@@ -111,6 +112,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <ManageUsers />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "all-users",
+        element: (
+          <PrivateRoute>
+            <AllUsers />
           </PrivateRoute>
         ),
       },
