@@ -24,6 +24,9 @@ import WhyChoose from "../pages/Home/WhyChoose/WhyChoose";
 import AllUsers from "../pages/Dashboard/Admin/AllUsers";
 import CreateDonationRequest from "../pages/Dashboard/Donor/CreateDonationRequest";
 import MyDonationRequests from "../pages/Dashboard/Donor/MyDonationRequests";
+import DonationRequestDetails from "../pages/Dashboard/Donor/DonationRequestDetails/DonationRequestDetails";
+import EditRequest from "../pages/Dashboard/Donor/EditRequest";
+import AllBloodDonationRequests from "../pages/Dashboard/Admin/AllBloodDonationRequests";
 
 export const router = createBrowserRouter([
   {
@@ -166,6 +169,22 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "request-details/:id",
+        element: (
+          <PrivateRoute>
+            <DonationRequestDetails />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "edit-request/:id",
+        element: (
+          <PrivateRoute>
+            <EditRequest />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "profile",
         element: (
           <PrivateRoute>
@@ -184,6 +203,10 @@ export const router = createBrowserRouter([
       {
         path: "manage-orders",
         element: <ManageOrders />,
+      },
+      {
+        path: "all-blood-donation-requests",
+        element: <AllBloodDonationRequests />,
       },
     ],
   },

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import logo from "../../../assets/images/Logo.png";
 import { Link, NavLink } from "react-router";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../Hooks/useAuth";
+
 
 const Navbar = () => {
   const { user, logOut } = useAuth();

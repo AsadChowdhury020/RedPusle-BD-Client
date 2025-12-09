@@ -1,19 +1,20 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
-import useAuth from "../../../hooks/useAuth";
 import useAxios from "../../../hooks/useAxios";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useUserRole from "../../../Hooks/useUserRole";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 
 const statusOptions = ["all", "pending", "inprogress", "done", "canceled"];
 
-const MyDonationRequests = () => {
-  const { user } = useAuth();
+const AllBloodDonationRequests = () => {
   const axiosInstance = useAxios();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
+  const { role, roleLoading } = useUserRole();
+  console.log(role)
 
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,12 +25,9 @@ const MyDonationRequests = () => {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["myDonationRequests", user?.email],
-    enabled: !!user?.email,
+    queryKey: ["allDonationRequests"],
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/donation-requests/email?email=${user.email}`
-      );
+      const res = await axiosSecure.get("/donation-requests");
       return res.data;
     },
   });
@@ -49,6 +47,7 @@ const MyDonationRequests = () => {
   // Handle Status Change
   const handleStatusChange = async (id, newStatus) => {
     try {
+      // await axiosInstance.patch(`/donation-requests/${id}`, {
       await axiosSecure.patch(`/donation-requests/${id}`, {
         status: newStatus,
       });
@@ -72,6 +71,7 @@ const MyDonationRequests = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          // await axiosInstance.delete(`/donation-requests/${id}`);
           await axiosSecure.delete(`/donation-requests/${id}`);
           Swal.fire(
             "Deleted!",
@@ -90,8 +90,8 @@ const MyDonationRequests = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl text-primary font-semibold mb-4">
-        My Donation Requests
+      <h2 className="text-xl text-primary font-semibold mb-4 text-center">
+        All Blood Donation Requests
       </h2>
 
       {/* Filter */}
@@ -113,8 +113,8 @@ const MyDonationRequests = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto shadow-md shadow-secondary">
-        <table className="table w-full border border-secondary">
+      <div className="overflow-x-auto border border-secondary rounded-md">
+        <table className="table w-full">
           <thead>
             <tr className="bg-base-200">
               <th>#</th>
@@ -159,51 +159,60 @@ const MyDonationRequests = () => {
                       "-"
                     )}
                   </td>
-
                   <td className="space-x-1">
+                    {/* ✅ For large screens: show all buttons inline */}
                     <div className="hidden lg:flex flex-wrap gap-1">
-                      {item.status === "inprogress" && (
+                      {item.status === "inprogress" &&
+                        !roleLoading &&
+                        (role === "admin" || role === "volunteer") && (
+                          <>
+                            <button
+                              onClick={() =>
+                                handleStatusChange(item._id, "done")
+                              }
+                              className="btn btn-xs btn-success"
+                            >
+                              Done
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleStatusChange(item._id, "canceled")
+                              }
+                              className="btn btn-xs btn-error"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        )}
+                      {!roleLoading && role === "admin" && (
                         <>
                           <button
-                            onClick={() => handleStatusChange(item._id, "done")}
-                            className="btn btn-xs btn-success"
+                            onClick={() =>
+                              navigate(`/dashboard/edit-request/${item._id}`)
+                            }
+                            className="btn btn-xs btn-warning"
                           >
-                            Done
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item._id)}
+                            className="btn btn-xs btn-outline btn-error"
+                          >
+                            Delete
                           </button>
                           <button
                             onClick={() =>
-                              handleStatusChange(item._id, "canceled")
+                              navigate(`/dashboard/request-details/${item._id}`)
                             }
-                            className="btn btn-xs btn-error"
+                            className="btn btn-xs btn-info"
                           >
-                            Cancel
+                            View
                           </button>
                         </>
                       )}
-                      <button
-                        onClick={() =>
-                          navigate(`/dashboard/edit-request/${item._id}`)
-                        }
-                        className="btn btn-xs btn-warning"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item._id)}
-                        className="btn btn-xs btn-outline btn-error"
-                      >
-                        Delete
-                      </button>
-                      <button
-                        onClick={() =>
-                          navigate(`/dashboard/request-details/${item._id}`)
-                        }
-                        className="btn btn-xs btn-info"
-                      >
-                        View
-                      </button>
                     </div>
 
+                    {/* ✅ For smaller screens: show dropdown menu */}
                     <div
                       className={`dropdown dropdown-left lg:hidden ${
                         index >= currentData.length - 2
@@ -211,64 +220,76 @@ const MyDonationRequests = () => {
                           : "dropdown-bottom"
                       }`}
                     >
-                      <div
-                        tabIndex={0}
-                        role="button"
-                        className="btn btn-xs btn-outline m-1"
-                      >
-                        Actions
-                      </div>
+                      {item.status === "inprogress" && (
+                        <div
+                          tabIndex={0}
+                          role="button"
+                          className="btn btn-xs btn-outline m-1"
+                        >
+                          Actions
+                        </div>
+                      )}
+
                       <ul
                         tabIndex={0}
                         className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
                       >
-                        {item.status === "inprogress" && (
+                        {item.status === "inprogress" &&
+                          !roleLoading &&
+                          (role === "admin" || role === "volunteer") && (
+                            <>
+                              <li>
+                                <button
+                                  onClick={() =>
+                                    handleStatusChange(item._id, "done")
+                                  }
+                                >
+                                  ✅ Done
+                                </button>
+                              </li>
+                              <li>
+                                <button
+                                  onClick={() =>
+                                    handleStatusChange(item._id, "canceled")
+                                  }
+                                >
+                                  ❌ Cancel
+                                </button>
+                              </li>
+                            </>
+                          )}
+
+                        {!roleLoading && role === "admin" && (
                           <>
                             <li>
                               <button
                                 onClick={() =>
-                                  handleStatusChange(item._id, "done")
+                                  navigate(
+                                    `/dashboard/edit-request/${item._id}`
+                                  )
                                 }
                               >
-                                ✅ Done
+                                ✏️ Edit
+                              </button>
+                            </li>
+                            <li>
+                              <button onClick={() => handleDelete(item._id)}>
+                                🗑️ Delete
                               </button>
                             </li>
                             <li>
                               <button
                                 onClick={() =>
-                                  handleStatusChange(item._id, "canceled")
+                                  navigate(
+                                    `/dashboard/request-details/${item._id}`
+                                  )
                                 }
                               >
-                                ❌ Cancel
+                                🔍 View
                               </button>
                             </li>
                           </>
                         )}
-                        <li>
-                          {" "}
-                          <button
-                            onClick={() =>
-                              navigate(`/dashboard/edit-request/${item._id}`)
-                            }
-                          >
-                            ✏️ Edit
-                          </button>
-                        </li>
-                        <li>
-                          <button onClick={() => handleDelete(item._id)}>
-                            🗑️ Delete
-                          </button>
-                        </li>
-                        <li>
-                          {" "}
-                          <button
-                            onClick={() =>
-                              navigate(`/dashboard/request-details/${item._id}`)
-                            }
-                          >
-                            🔍 View
-                          </button>
-                        </li>
                       </ul>
                     </div>
                   </td>
@@ -297,4 +318,4 @@ const MyDonationRequests = () => {
   );
 };
 
-export default MyDonationRequests;
+export default AllBloodDonationRequests;

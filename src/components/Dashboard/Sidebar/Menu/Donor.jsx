@@ -1,4 +1,4 @@
-import { BsFingerprint } from 'react-icons/bs'
+import { BsFillFilePlusFill, BsFingerprint } from 'react-icons/bs'
 import { GrUserAdmin } from 'react-icons/gr'
 import MenuItem from './MenuItem'
 import { useState } from 'react'
@@ -27,7 +27,7 @@ const CustomerMenu = () => {
 
       <BecomeSellerModal closeModal={closeModal} isOpen={isOpen} />
       <MenuItem icon={IoIosCreate } label='Create Donation Request' address='create-donation-request' />
-      <MenuItem icon={IoIosCreate } label='My Donation Requests' address='my-donation-requests' />
+      <MenuItem icon={BsFillFilePlusFill  } label='My Donation Requests' address='my-donation-requests' />
     </>
   )
 }

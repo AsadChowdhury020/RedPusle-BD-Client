@@ -1,4 +1,5 @@
 import { FaUserCog, FaUsers } from 'react-icons/fa'
+import { TfiList } from "react-icons/tfi";
 import MenuItem from './MenuItem'
 
 const AdminMenu = () => {
@@ -6,7 +7,7 @@ const AdminMenu = () => {
     <>
       <MenuItem icon={FaUserCog} label='Manage Users' address='manage-users' />
       <MenuItem icon={FaUsers } label='All Users' address='all-users' />
-      {/* <MenuItem icon={FaUsers } label='Create Donor Request' address='create-donation-request' /> */}
+      <MenuItem icon={TfiList } label='All Blood Donation Requests' address='all-blood-donation-requests' />
     </>
   )
 }
