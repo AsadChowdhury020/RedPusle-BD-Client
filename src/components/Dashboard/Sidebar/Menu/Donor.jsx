@@ -4,6 +4,7 @@ import MenuItem from './MenuItem'
 import { useState } from 'react'
 import BecomeSellerModal from '../../../Modal/BecomeSellerModal'
 import { FaUsers } from 'react-icons/fa'
+import { IoIosCreate } from 'react-icons/io'
 const CustomerMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -25,7 +26,8 @@ const CustomerMenu = () => {
       </div>
 
       <BecomeSellerModal closeModal={closeModal} isOpen={isOpen} />
-      <MenuItem icon={FaUsers } label='Create Donor Request' address='create-donation-request' />
+      <MenuItem icon={IoIosCreate } label='Create Donation Request' address='create-donation-request' />
+      <MenuItem icon={IoIosCreate } label='My Donation Requests' address='my-donation-requests' />
     </>
   )
 }

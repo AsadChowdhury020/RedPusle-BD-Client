@@ -13,7 +13,7 @@ import { BsGraphUp } from 'react-icons/bs'
 import MenuItem from './Menu/MenuItem'
 import AdminMenu from './Menu/AdminMenu'
 import SellerMenu from './Menu/SellerMenu'
-import CustomerMenu from './Menu/CustomerMenu'
+import CustomerMenu from './Menu/Donor'
 import Container from '../../Shared/Container'
 
 const Sidebar = () => {

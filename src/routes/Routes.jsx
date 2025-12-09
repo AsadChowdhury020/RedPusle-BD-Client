@@ -23,6 +23,7 @@ import Search from "../pages/NavbarPages/Search";
 import WhyChoose from "../pages/Home/WhyChoose/WhyChoose";
 import AllUsers from "../pages/Dashboard/Admin/AllUsers";
 import CreateDonationRequest from "../pages/Dashboard/Donor/CreateDonationRequest";
+import MyDonationRequests from "../pages/Dashboard/Donor/MyDonationRequests";
 
 export const router = createBrowserRouter([
   {
@@ -155,6 +156,14 @@ export const router = createBrowserRouter([
 
           return { districtsData, upazilasData };
         },
+      },
+      {
+        path: "my-donation-requests",
+        element: (
+          <PrivateRoute>
+            <MyDonationRequests />
+          </PrivateRoute>
+        ),
       },
       {
         path: "profile",
