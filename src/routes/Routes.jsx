@@ -53,7 +53,9 @@ export const router = createBrowserRouter([
         // },
         // loader: () => fetch("/whyChoose.json").then((res) => res.json()),
       },
-      { path: "/search", element: <Search />,
+      {
+        path: "/search",
+        element: <Search />,
         loader: async () => {
           const districtsData = await fetch("/districts.json").then((res) =>
             res.json()
@@ -64,7 +66,7 @@ export const router = createBrowserRouter([
 
           return { districtsData, upazilasData };
         },
-       },
+      },
       { path: "/login", element: <Login /> },
       {
         path: "/signup",
@@ -87,7 +89,7 @@ export const router = createBrowserRouter([
   { path: "/blogs", element: <Blogs /> },
   { path: "/donation-requests", element: <DonationRequests /> },
   { path: "/funding", element: <Funding /> },
-  
+
   {
     path: "/dashboard",
     element: (
@@ -142,8 +144,17 @@ export const router = createBrowserRouter([
           <PrivateRoute>
             <CreateDonationRequest />
           </PrivateRoute>
-          
         ),
+        loader: async () => {
+          const districtsData = await fetch("/districts.json").then((res) =>
+            res.json()
+          );
+          const upazilasData = await fetch("/upazilas.json").then((res) =>
+            res.json()
+          );
+
+          return { districtsData, upazilasData };
+        },
       },
       {
         path: "profile",

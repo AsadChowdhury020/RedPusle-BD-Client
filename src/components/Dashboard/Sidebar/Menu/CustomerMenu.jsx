@@ -3,6 +3,7 @@ import { GrUserAdmin } from 'react-icons/gr'
 import MenuItem from './MenuItem'
 import { useState } from 'react'
 import BecomeSellerModal from '../../../Modal/BecomeSellerModal'
+import { FaUsers } from 'react-icons/fa'
 const CustomerMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -24,6 +25,7 @@ const CustomerMenu = () => {
       </div>
 
       <BecomeSellerModal closeModal={closeModal} isOpen={isOpen} />
+      <MenuItem icon={FaUsers } label='Create Donor Request' address='create-donation-request' />
     </>
   )
 }

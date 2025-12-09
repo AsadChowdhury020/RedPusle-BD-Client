@@ -2,13 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import useAxios from "../../../hooks/useAxios";
+import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const CreateDonationRequest = () => {
   const { user, loading: authLoading } = useAuth();
   const axiosInstance = useAxios();
+  const axiosSecure = useAxiosSecure()
+
+  const { upazilasData, districtsData } = useLoaderData();
 
   const {
     register,
@@ -24,18 +29,17 @@ const CreateDonationRequest = () => {
   const selectedDistrict = watch("recipientDistrict");
   const navigate = useNavigate();
 
-  // Load district & upazila
+  const districtsList = districtsData[2].data.sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+  const upazilasList = upazilasData[2].data.sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
   useEffect(() => {
-    const loadLocation = async () => {
-      const districtRes = await fetch("/districts.json");
-      const upazilaRes = await fetch("/upazilas.json");
-      const dData = await districtRes.json();
-      const uData = await upazilaRes.json();
-      setDistricts(dData);
-      setUpazilas(uData);
-    };
-    loadLocation();
-  }, []);
+    setDistricts(districtsList);
+    setUpazilas(upazilasList);
+  }, [districtsList, upazilasList]);
 
   useEffect(() => {
     const match = districts.find((d) => d.name === selectedDistrict);
@@ -54,7 +58,8 @@ const CreateDonationRequest = () => {
     queryKey: ["profile", user?.email],
     enabled: !!user?.email && !authLoading,
     queryFn: async () => {
-      const res = await axiosInstance.get(`/users/email?email=${user.email}`);
+    //   const res = await axiosInstance.get(`/users/email?email=${user.email}`);
+      const res = await axiosSecure.get(`/users/email?email=${user.email}`);
       return res.data;
     },
   });
@@ -93,9 +98,10 @@ const CreateDonationRequest = () => {
     }
   };
 
-  if (isLoading || authLoading) return <Loading />;
-  if (isError)
+  if (isLoading || authLoading) return <LoadingSpinner />;
+  if (isError) {
     return <div className="text-center mt-10">Failed to load profile.</div>;
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-base-100 rounded-lg shadow-lg mt-10 shadow-secondary border border-secondary">
