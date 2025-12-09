@@ -45,7 +45,8 @@ const AllUsers = () => {
         updateData = { role: action };
       }
 
-      return axiosInstance.patch(`/users?email=${email}`, updateData);
+      // return axiosInstance.patch(`/users?email=${email}`, updateData);
+      return axiosSecure.patch(`/users?email=${email}`, updateData);
     },
     onSuccess: (_data, variables) => {
       const { action } = variables;

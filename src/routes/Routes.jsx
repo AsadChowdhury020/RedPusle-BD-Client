@@ -22,6 +22,7 @@ import Reviews from "../pages/NavbarPages/Reviews";
 import Search from "../pages/NavbarPages/Search";
 import WhyChoose from "../pages/Home/WhyChoose/WhyChoose";
 import AllUsers from "../pages/Dashboard/Admin/AllUsers";
+import CreateDonationRequest from "../pages/Dashboard/Donor/CreateDonationRequest";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,18 @@ export const router = createBrowserRouter([
         // },
         // loader: () => fetch("/whyChoose.json").then((res) => res.json()),
       },
+      { path: "/search", element: <Search />,
+        loader: async () => {
+          const districtsData = await fetch("/districts.json").then((res) =>
+            res.json()
+          );
+          const upazilasData = await fetch("/upazilas.json").then((res) =>
+            res.json()
+          );
+
+          return { districtsData, upazilasData };
+        },
+       },
       { path: "/login", element: <Login /> },
       {
         path: "/signup",
@@ -74,7 +87,7 @@ export const router = createBrowserRouter([
   { path: "/blogs", element: <Blogs /> },
   { path: "/donation-requests", element: <DonationRequests /> },
   { path: "/funding", element: <Funding /> },
-  { path: "/search", element: <Search /> },
+  
   {
     path: "/dashboard",
     element: (
@@ -121,6 +134,15 @@ export const router = createBrowserRouter([
           <PrivateRoute>
             <AllUsers />
           </PrivateRoute>
+        ),
+      },
+      {
+        path: "create-donation-request",
+        element: (
+          <PrivateRoute>
+            <CreateDonationRequest />
+          </PrivateRoute>
+          
         ),
       },
       {
