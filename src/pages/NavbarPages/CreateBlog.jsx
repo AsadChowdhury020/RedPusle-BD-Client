@@ -59,7 +59,7 @@ const CreateBlog = () => {
 
   return (
     <Container>
-      <div className="max-w-3xl mx-auto p-6 mt-10 border shadow-md rounded-lg">
+      <div className="max-w-3xl mx-auto p-6 mt-16 border  shadow-lg rounded-lg">
         <h2 className="text-3xl font-bold text-primary mb-6 text-center">
           Write a New Blog
         </h2>
