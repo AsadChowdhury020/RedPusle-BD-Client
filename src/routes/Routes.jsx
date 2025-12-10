@@ -27,6 +27,8 @@ import MyDonationRequests from "../pages/Dashboard/Donor/MyDonationRequests";
 import DonationRequestDetails from "../pages/Dashboard/Donor/DonationRequestDetails/DonationRequestDetails";
 import EditRequest from "../pages/Dashboard/Donor/EditRequest";
 import AllBloodDonationRequests from "../pages/Dashboard/Admin/AllBloodDonationRequests";
+import BlogDetails from "../pages/NavbarPages/BlogDetails";
+import CreateBlog from "../pages/NavbarPages/CreateBlog";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +74,16 @@ export const router = createBrowserRouter([
           return { districtsData, upazilasData };
         },
       },
+      { path: "/blogs", element: <Blogs /> },
+      { path: "/blog-details/:id", element: <BlogDetails /> },
+      {
+        path: "/create-blog",
+        element: (
+          <PrivateRoute>
+            <CreateBlog />
+          </PrivateRoute>
+        ),
+      },
       { path: "/login", element: <Login /> },
       {
         path: "/signup",
@@ -91,7 +103,6 @@ export const router = createBrowserRouter([
   },
 
   { path: "/about-us", element: <AboutUs /> },
-  { path: "/blogs", element: <Blogs /> },
   { path: "/funding", element: <Funding /> },
 
   {
