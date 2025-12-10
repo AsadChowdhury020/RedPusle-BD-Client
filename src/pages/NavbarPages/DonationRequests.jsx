@@ -1,19 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { FaTint } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Hospital, CalendarDays, Clock } from "lucide-react";
 import useAxios from "../../hooks/useAxios";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 
+const itemsPerPage = 5;
 
 const DonationRequests = () => {
   const axiosInstance = useAxios();
-  const axiosSecure = useAxiosSecure()
   const navigate = useNavigate();
 
-  const { 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const {
     data: requests = [],
     isLoading,
     isError,
@@ -27,83 +26,109 @@ const DonationRequests = () => {
     },
   });
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
-  if (isError) {
+  if (isError)
     return (
       <div className="text-center text-red-500 py-10">
         Failed to load donation requests.
       </div>
     );
-  }
+
+  // Pagination calculations
+  const totalPages = Math.ceil(requests.length / itemsPerPage);
+  const currentData = requests.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
-    <div className="py-10">
-      <h1 className="text-4xl font-bold text-center text-primary mb-8">
+    <div className="p-4 mt-10">
+      <h2 className="text-3xl text-primary font-bold mb-6 text-center">
         Pending Blood Donation Requests
-      </h1>
+      </h2>
 
-      {requests.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {requests.map((req) => (
-            <div
-              key={req._id}
-              className="border border-secondary rounded-lg p-4 shadow-md shadow-secondary hover:shadow-lg transition"
-            >
-              <div className="flex items-center gap-2 mb-2 text-primary font-semibold">
-                <FaTint />
-                <span>{req.bloodGroup}</span>
-              </div>
+      {/* Table */}
+      <div className="overflow-x-auto border border-secondary rounded-md">
+        <table className="table w-full">
+          <thead>
+            <tr className="bg-base-200">
+              <th>#</th>
+              <th>Recipient</th>
+              <th>Location</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Blood</th>
+              <th>Hospital</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-400 mb-1">
-                {req.recipientName}
-              </h3>
+          <tbody>
+            {currentData.length === 0 ? (
+              <tr>
+                <td colSpan="8" className="text-center py-4">
+                  No pending donation requests found.
+                </td>
+              </tr>
+            ) : (
+              currentData.map((req, index) => (
+                <tr key={req._id}>
+                  <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                  <td>{req.recipientName}</td>
 
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1 flex items-center gap-1">
-                <MapPin className="w-4 h-4 text-primary" />
-                {req.recipientUpazila}, {req.recipientDistrict}
-              </p>
+                  <td>
+                    {req.recipientUpazila}, {req.recipientDistrict}
+                  </td>
 
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1 flex items-center gap-1">
-                <Hospital className="w-4 h-4 text-primary" />
-                {req.hospitalName}, {req.fullAddress}
-              </p>
+                  <td>{req.donationDate}</td>
 
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1 flex items-center gap-1">
-                <CalendarDays className="w-4 h-4 text-primary" />
-                {req.donationDate}
-              </p>
+                  <td>
+                    {new Date(`1970-01-01T${req.donationTime}`).toLocaleTimeString(
+                      [],
+                      { hour: "2-digit", minute: "2-digit", hour12: true }
+                    )}
+                  </td>
 
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 flex items-center gap-1">
-                <Clock className="w-4 h-4 text-primary" />
-                {new Date(`1970-01-01T${req.donationTime}`).toLocaleTimeString(
-                  [],
-                  {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  }
-                )}
-              </p>
+                  <td className="font-bold text-primary">{req.bloodGroup}</td>
 
-              <div className="text-right">
-                <button
-                  className="btn btn-sm btn-outline btn-primary"
-                  onClick={() => navigate(`/donation-requests/${req._id}`)}
-                >
-                  View Details
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-center text-gray-500 mt-10">
-          No pending donation requests found.
-        </p>
-      )}
+                  <td>
+                    {req.hospitalName}
+                    <br />
+                    <span className="text-xs text-gray-500">
+                      {req.fullAddress}
+                    </span>
+                  </td>
+
+                  <td>
+                    <button
+                      className="btn btn-xs btn-outline btn-primary"
+                      onClick={() => navigate(`/dashboard/request-details/${req._id}`)}
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-6 flex justify-center gap-2">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+          <button
+            key={pageNum}
+            onClick={() => setCurrentPage(pageNum)}
+            className={`btn btn-sm ${
+              pageNum === currentPage ? "btn-primary" : "btn-ghost"
+            }`}
+          >
+            {pageNum}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

@@ -49,6 +49,7 @@ export const router = createBrowserRouter([
           return await fetch("/reviews.json").then((res) => res.json());
         },
       },
+      { path: "/donation-requests", element: <DonationRequests /> },
       {
         path: "/why-choose",
         element: <WhyChoose />,
@@ -91,7 +92,6 @@ export const router = createBrowserRouter([
 
   { path: "/about-us", element: <AboutUs /> },
   { path: "/blogs", element: <Blogs /> },
-  { path: "/donation-requests", element: <DonationRequests /> },
   { path: "/funding", element: <Funding /> },
 
   {
