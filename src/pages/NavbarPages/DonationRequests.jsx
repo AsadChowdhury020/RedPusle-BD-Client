@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../hooks/useAxios";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
+import Container from "../../components/Shared/Container";
 
 const itemsPerPage = 5;
 
@@ -43,7 +44,8 @@ const DonationRequests = () => {
   );
 
   return (
-    <div className="p-4 mt-10">
+ <Container>
+     <div className="p-4 mt-16 bg-base-200">
       <h2 className="text-3xl text-primary font-bold mb-6 text-center">
         Pending Blood Donation Requests
       </h2>
@@ -130,6 +132,7 @@ const DonationRequests = () => {
         ))}
       </div>
     </div>
+ </Container>
   );
 };
 
