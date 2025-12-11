@@ -17,7 +17,7 @@ import { createBrowserRouter } from "react-router";
 import AboutUs from "../pages/NavbarPages/AboutUs";
 import Blogs from "../pages/NavbarPages/Blogs";
 import DonationRequests from "../pages/NavbarPages/DonationRequests";
-import Funding from "../pages/NavbarPages/Funding";
+import Funding from "../pages/NavbarPages/Funding/Funding";
 import Reviews from "../pages/NavbarPages/Reviews";
 import Search from "../pages/NavbarPages/Search";
 import WhyChoose from "../pages/Home/WhyChoose/WhyChoose";
@@ -29,6 +29,9 @@ import EditRequest from "../pages/Dashboard/Donor/EditRequest";
 import AllBloodDonationRequests from "../pages/Dashboard/Admin/AllBloodDonationRequests";
 import BlogDetails from "../pages/NavbarPages/BlogDetails";
 import CreateBlog from "../pages/NavbarPages/CreateBlog";
+import FundingForm from "../pages/NavbarPages/Funding/FundingForm";
+import FundingSuccess from "../pages/NavbarPages/Funding/FundingSuccess";
+import FundingCancel from "../pages/NavbarPages/Funding/FundingCancel";
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +87,14 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+      { path: "/about-us", element: <AboutUs /> },
+      { path: "/funding", element: <Funding /> },
+      { path: "/funding-success", element: <FundingSuccess /> },
+      { path: "/funding-cancel", element: <FundingCancel /> },
+      {
+        path: "/funding/form",
+        element: <FundingForm />,
+      },
       { path: "/login", element: <Login /> },
       {
         path: "/signup",
@@ -101,9 +112,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-
-  { path: "/about-us", element: <AboutUs /> },
-  { path: "/funding", element: <Funding /> },
 
   {
     path: "/dashboard",
