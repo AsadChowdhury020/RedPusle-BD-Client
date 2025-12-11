@@ -12,7 +12,7 @@ import Statistics from "../pages/Dashboard/Common/Statistics";
 import MainLayout from "../layouts/MainLayout";
 import MyInventory from "../pages/Dashboard/Seller/MyInventory";
 import ManageOrders from "../pages/Dashboard/Seller/ManageOrders";
-import MyOrders from "../pages/Dashboard/Customer/MyOrders";
+import MyOrders from "../pages/Dashboard/Volunteer/MyOrders";
 import { createBrowserRouter } from "react-router";
 import AboutUs from "../pages/NavbarPages/AboutUs";
 import Blogs from "../pages/NavbarPages/Blogs";
@@ -32,6 +32,9 @@ import CreateBlog from "../pages/NavbarPages/CreateBlog";
 import FundingForm from "../pages/NavbarPages/Funding/FundingForm";
 import FundingSuccess from "../pages/NavbarPages/Funding/FundingSuccess";
 import FundingCancel from "../pages/NavbarPages/Funding/FundingCancel";
+import AdminHome from "../pages/Dashboard/Admin/AdminHome";
+import DonorDashboardHome from "../pages/Dashboard/Donor/DonorDashboardHome";
+import VolunteerHome from "../pages/Dashboard/Volunteer/VolunteerHome";
 
 export const router = createBrowserRouter([
   {
@@ -226,6 +229,18 @@ export const router = createBrowserRouter([
       {
         path: "all-blood-donation-requests",
         element: <AllBloodDonationRequests />,
+      },
+      {
+        path: "admin-home",
+        element: <AdminHome />,
+      },
+      {
+        path: "donor-home",
+        element: <DonorDashboardHome />,
+      },
+      {
+        path: "volunteer-home",
+        element: <VolunteerHome />,
       },
     ],
   },

@@ -12,13 +12,15 @@ import { BsGraphUp } from 'react-icons/bs'
 // User Menu
 import MenuItem from './Menu/MenuItem'
 import AdminMenu from './Menu/AdminMenu'
-import SellerMenu from './Menu/SellerMenu'
-import CustomerMenu from './Menu/Donor'
+import VolunteerMenu from './Menu/VolunteerMenu'
+import DonorMenu from './Menu/DonorMenu'
 import Container from '../../Shared/Container'
+import useUserRole from '../../../Hooks/useUserRole'
 
 const Sidebar = () => {
   const { logOut } = useAuth()
   const [isActive, setActive] = useState(false)
+  const { role } = useUserRole()
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
@@ -71,9 +73,13 @@ const Sidebar = () => {
                 address='/dashboard'
               />
               {/* Role-Based Menu */}
-              <CustomerMenu />
-              <SellerMenu />
-              <AdminMenu />
+             { role === 'admin' && <AdminMenu /> }
+             { role === 'donor' && <DonorMenu /> }
+             { role === 'volunteer' && <VolunteerMenu /> }              
+              
+              {/* <DonorMenu />
+              <VolunteerMenu />
+              <AdminMenu /> */}
             </nav>
           </div>
 
