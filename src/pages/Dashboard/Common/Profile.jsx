@@ -59,7 +59,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-6">
-      <div className="w-full max-w-3xl bg-white dark:bg-base-300 shadow-xl rounded-2xl overflow-hidden">
+      <div className="w-full max-w-3xl dark:bg-base-300 shadow-xl rounded-2xl overflow-hidden">
         {/* Banner */}
         <div className="relative h-40 bg-gradient-to-r from-red-500 to-primary">
           <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">

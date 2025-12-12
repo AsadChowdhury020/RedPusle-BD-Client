@@ -1,5 +1,5 @@
 import Home from "../pages/Home/Home/Home";
-import ErrorPage from "../pages/ErrorPage";
+import ErrorPage from "../components/Shared/ErrorPage";
 import Login from "../pages/Login/Login";
 import SignUp from "../pages/SignUp/SignUp";
 import PlantDetails from "../pages/PlantDetails/PlantDetails";
@@ -12,7 +12,7 @@ import Statistics from "../pages/Dashboard/Common/Statistics";
 import MainLayout from "../layouts/MainLayout";
 import MyInventory from "../pages/Dashboard/Seller/MyInventory";
 import ManageOrders from "../pages/Dashboard/Seller/ManageOrders";
-import MyOrders from "../pages/Dashboard/Volunteer/MyOrders";
+// import MyOrders from "../pages/Dashboard/Volunteer/MyOrders";
 import { createBrowserRouter } from "react-router";
 import AboutUs from "../pages/NavbarPages/AboutUs";
 import Blogs from "../pages/NavbarPages/Blogs";
@@ -124,11 +124,19 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
+      // {
+      //   index: true,
+      //   element: (
+      //     <PrivateRoute>
+      //       <Statistics />
+      //     </PrivateRoute>
+      //   ),
+      // },
       {
         index: true,
         element: (
           <PrivateRoute>
-            <Statistics />
+            <AdminHome />
           </PrivateRoute>
         ),
       },
@@ -214,14 +222,14 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      {
-        path: "my-orders",
-        element: (
-          <PrivateRoute>
-            <MyOrders />
-          </PrivateRoute>
-        ),
-      },
+      // {
+      //   path: "my-orders",
+      //   element: (
+      //     <PrivateRoute>
+      //       <MyOrders />
+      //     </PrivateRoute>
+      //   ),
+      // },
       {
         path: "manage-orders",
         element: <ManageOrders />,

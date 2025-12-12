@@ -1,5 +1,4 @@
 import React from "react";
-// import useAxios from "../../Hooks/useAxios";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import Container from "../../../components/Shared/Container";
@@ -9,9 +8,13 @@ import {
   MdOutlineLocationOn,
   MdOutlineWatchLater,
 } from "react-icons/md";
+import useAxios from "../../../Hooks/useAxios";
+import useAuth from "../../../hooks/useAuth";
 
 const ContactUs = () => {
-  //   const axiosInstance = useAxios();
+    const axiosInstance = useAxios();
+    const { user } = useAuth()
+    // console.log(user.displayName);
   const {
     register,
     handleSubmit,
@@ -25,7 +28,7 @@ const ContactUs = () => {
       createdAt: new Date().toISOString(),
     };
     try {
-      //   await axiosInstance.post("/contacts", contactInfo);
+        await axiosInstance.post("/contacts", contactInfo);
       Swal.fire("Success!", "Your message has been sent!", "success");
       reset();
     } catch (error) {
@@ -33,6 +36,7 @@ const ContactUs = () => {
       Swal.fire("Error!", "Failed to send message", "error");
     }
   };
+
 
   return (
     <Container>
@@ -58,6 +62,7 @@ const ContactUs = () => {
                 <input
                   type="text"
                   className="input input-bordered w-full"
+                  defaultValue={user?.displayName || ""}
                   {...register("name", { required: "Name is required" })}
                 />
                 {errors.name && (
@@ -70,6 +75,7 @@ const ContactUs = () => {
                 <input
                   type="email"
                   className="input input-bordered w-full"
+                  defaultValue={user?.email || ""}
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
