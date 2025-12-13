@@ -31,7 +31,9 @@ The platform enables users to create donation requests, search donors, manage pr
 - Firebase Authentication
 - Axios
 - TanStack React Query
+- React Hook Form
 - Stripe (client)
+- React Icons
 - Lucide React Icons
 - React Spinners
 - Framer Motion (optional animations)

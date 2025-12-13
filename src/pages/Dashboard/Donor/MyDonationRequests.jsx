@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import useAxios from "../../../hooks/useAxios";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";

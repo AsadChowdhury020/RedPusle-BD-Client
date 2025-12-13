@@ -3,23 +3,27 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import useDistrictsUpazilas from "../../../hooks/useDistrictsUpozilas";
 import useAuth from "../../../hooks/useAuth";
-import useAxios from "../../../hooks/useAxios";
+// import useAxios from "../../../hooks/useAxios";
 
-// import useAxios from "../../../Hooks/useAxios";
+
 
 const EditRequest = () => {
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
-  const axiosInstance = useAxios();
+  // const axiosInstance = useAxios();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { districts : districtsData, upazilas : upazilasData , loading : dataLoading } = useDistrictsUpazilas()
+  const {
+    districts: districtsData,
+    upazilas: upazilasData,
+    loading: dataLoading,
+  } = useDistrictsUpazilas();
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
@@ -34,28 +38,12 @@ const EditRequest = () => {
   } = useForm();
 
   const selectedDistrict = watch("recipientDistrict");
-  const selectedUpazila = watch('recipientUpazila')
-  console.log(selectedUpazila)
+
 
   useEffect(() => {
-    setDistricts(districtsData)
-    setUpazilas(upazilasData)
-  }, [districtsData, upazilasData])
-
-  useEffect(() => {
-    const match = districts.find((d) => d.name === selectedDistrict);
-    if (match) {
-      const filteredUpazila = upazilas.filter((u) => u.district_id === match.id)
-      setFilteredUpazilas(filteredUpazila);
-      console.log(filteredUpazila)
-      if(filteredUpazila.length> 0){
-        setValue('recipientUpazila', filteredUpazila[0].name)
-      }
-    } else {
-      setFilteredUpazilas([]);
-    }
-  }, [selectedDistrict, districts, upazilas, setValue]);
-
+    setDistricts(districtsData);
+    setUpazilas(upazilasData);
+  }, [districtsData, upazilasData]);
 
   const {
     data: requestData,
@@ -70,18 +58,35 @@ const EditRequest = () => {
     },
   });
 
+  useEffect(() => {
+    if (!selectedDistrict || !requestData) return;
+
+    const match = districts.find((d) => d.name === selectedDistrict);
+    if (!match) return
+
+    const filtered = upazilas.filter((u) => u.district_id === match.id);
+    setFilteredUpazilas(filtered);
+
+    const previousUpazila = requestData.recipientUpazila;
+
+    const exists = filtered.find((u) => u.name === previousUpazila);
+
+    if (exists) {
+      setValue("recipientUpazila", exists.name);
+    } else if (filtered.length > 0) {
+      setValue("recipientUpazila", filtered[0].name);
+    }
+  }, [selectedDistrict, districts, upazilas, requestData, setValue]);
+
   const mutation = useMutation({
     mutationFn: async (formData) => {
       const { _id, ...sanitizedData } = formData;
-      return await axiosSecure.patch(
-        `/donation-requests/${id}`,
-        sanitizedData
-      );
+      return await axiosSecure.patch(`/donation-requests/${id}`, sanitizedData);
     },
     onSuccess: () => {
       Swal.fire("Updated", "Donation request updated successfully", "success");
       queryClient.invalidateQueries({ queryKey: ["profile", user.email] });
-      navigate(-1)
+      navigate(-1);
     },
     onError: () => {
       Swal.fire("Error", "Failed to update donation request", "error");
@@ -97,7 +102,7 @@ const EditRequest = () => {
     );
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md shadow-secondary rounded-lg mt-10">
+    <div className="max-w-4xl mx-auto p-6 bg-white border border-primary rounded-lg mt-10">
       <h2 className="text-2xl font-bold mb-6 text-red-600 text-center">
         Edit Donation Request
       </h2>

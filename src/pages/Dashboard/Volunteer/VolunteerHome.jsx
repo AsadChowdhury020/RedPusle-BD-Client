@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Users, HeartHandshake, DollarSign } from "lucide-react";
 
 const VolunteerHome = () => {

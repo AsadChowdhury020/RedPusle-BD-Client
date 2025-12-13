@@ -1,18 +1,6 @@
-// import React from 'react';
-
-// const DonorDashboardHome = () => {
-//     return (
-//         <div>
-//             Donor Home
-//         </div>
-//     );
-// };
-
-// export default DonorDashboardHome;
-
 import React, { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
@@ -88,7 +76,7 @@ const DonorDashboardHome = () => {
         <>
           <h3 className="text-xl font-semibold mt-6 mb-3">Your Recent Requests</h3>
 
-          <div className="overflow-x-auto bg-white shadow rounded-lg">
+          <div className="overflow-x-auto bg-white border border-primary shadow rounded-lg">
             <table className="table w-full">
               <thead>
                 <tr>

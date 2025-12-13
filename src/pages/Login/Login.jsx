@@ -189,38 +189,38 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const { user } = await signInWithGoogle();
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     const { user } = await signInWithGoogle();
 
-      const userData = {
-        name: user?.displayName,
-        email: user?.email,
-        image: user?.photoURL,
-      };
+  //     const userData = {
+  //       name: user?.displayName,
+  //       email: user?.email,
+  //       image: user?.photoURL,
+  //     };
 
-      await saveOrUpdateUser(userData);
+  //     await saveOrUpdateUser(userData);
 
-      Swal.fire({
-        icon: "success",
-        title: "Login Successful!",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      navigate(from, { replace: true });
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      Swal.fire({
-        icon: "error",
-        title: "Google Login Failed",
-        text: err.message,
-      });
-    }
-  };
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Login Successful!",
+  //       timer: 2000,
+  //       showConfirmButton: false,
+  //     });
+  //     navigate(from, { replace: true });
+  //   } catch (err) {
+  //     console.log(err);
+  //     setLoading(false);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Google Login Failed",
+  //       text: err.message,
+  //     });
+  //   }
+  // };
   return (
     <div className="min-h-screen flex items-center justify-center py-10">
-      <div className="w-full max-w-md p-8 space-y-6 rounded-xl shadow-md shadow-secondary border border-secondary">
+      <div className="w-full max-w-md p-8 space-y-6 rounded-xl border border-secondary">
         <h2 className="text-2xl font-bold text-center text-primary">
           LogIn to RedPulse-BD
         </h2>
@@ -254,7 +254,7 @@ const Login = () => {
             className="btn btn-primary w-full mt-2"
             disabled={loading}
           >
-            {loading ? "Signing in..." : "SignIn"}
+            {loading ? "Logging in..." : "LogIn"}
           </button>
         </form>
 
@@ -273,7 +273,7 @@ const Login = () => {
             Go to Home
           </Link>
         </p>
-        <h3 className="text-primary text-center text-xl font-bold">OR</h3>
+        {/* <h3 className="text-primary text-center text-xl font-bold">OR</h3>
         <div
           onClick={handleGoogleSignIn}
           className="btn btn-primary mt-2 w-full"
@@ -281,7 +281,7 @@ const Login = () => {
           <FcGoogle size={32} />
 
           <p>Continue with Google</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

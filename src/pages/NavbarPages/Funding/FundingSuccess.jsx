@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { CheckCircle, ArrowLeft, Wallet } from "lucide-react";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAxios from "../../../hooks/useAxios";
 
 const FundingSuccess = () => {

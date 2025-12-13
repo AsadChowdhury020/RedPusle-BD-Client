@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Camera, Mail, User, Shield, Edit, Lock, Droplet, MapPin } from "lucide-react";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 const Profile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate()
 
   const [dbUser, setDbUser] = useState({});
   const [isUpdateOpen, setUpdateOpen] = useState(false);
@@ -44,18 +46,18 @@ const Profile = () => {
   };
 
   // Change Password Handler
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-    const newPass = e.target.password.value;
+  // const handlePasswordChange = async (e) => {
+  //   e.preventDefault();
+  //   const newPass = e.target.password.value;
 
-    try {
-      await user.updatePassword(newPass);
-      Swal.fire("Success!", "Password Updated Successfully", "success");
-      setPasswordOpen(false);
-    } catch (error) {
-      Swal.fire("Error", error.message, "error");
-    }
-  };
+  //   try {
+  //     await user.updatePassword(newPass);
+  //     Swal.fire("Success!", "Password Updated Successfully", "success");
+  //     setPasswordOpen(false);
+  //   } catch (error) {
+  //     Swal.fire("Error", error.message, "error");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-6">
@@ -100,7 +102,8 @@ const Profile = () => {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
             <button
-              onClick={() => setUpdateOpen(true)}
+              // onClick={() => setUpdateOpen(true)}
+              onClick={() => navigate("/dashboard/update-profile")}
               className="flex items-center justify-center gap-2 px-5 py-2 bg-primary text-white rounded-lg shadow hover:bg-red-600 transition"
             >
               <Edit className="w-4 h-4" />
@@ -108,7 +111,7 @@ const Profile = () => {
             </button>
 
             <button
-              onClick={() => setPasswordOpen(true)}
+              // onClick={() => setPasswordOpen(true)}
               className="flex items-center justify-center gap-2 px-5 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             >
               <Lock className="w-4 h-4" />
@@ -198,7 +201,7 @@ const Profile = () => {
       {isPasswordOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
           <form
-            onSubmit={handlePasswordChange}
+            // onSubmit={handlePasswordChange}
             className="bg-white p-6 rounded-xl shadow-lg w-80"
           >
             <h3 className="text-lg font-bold mb-3">Change Password</h3>

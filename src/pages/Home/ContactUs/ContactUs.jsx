@@ -8,7 +8,7 @@ import {
   MdOutlineLocationOn,
   MdOutlineWatchLater,
 } from "react-icons/md";
-import useAxios from "../../../Hooks/useAxios";
+import useAxios from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 
 const ContactUs = () => {

@@ -6,11 +6,11 @@ import { Dialog } from "@headlessui/react";
 import { ArrowLeft } from "lucide-react";
 import { GiConfirmed } from "react-icons/gi";
 import { BiXCircle } from "react-icons/bi";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import useAxios from "../../../../hooks/useAxios";
+import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../../components/Shared/LoadingSpinner";
-import { FaHandshake } from "react-icons/fa";
-import useAuth from "../../../../Hooks/useAuth";
+import { FaHandshake } from "react-icons/fa"
+import useAuth from "../../../../hooks/useAuth";
+import useAxios from "../../../../hooks/useAxios";
 
 const DonationRequestDetails = () => {
   const { id } = useParams();
@@ -67,7 +67,7 @@ const DonationRequestDetails = () => {
     return <p className="text-center text-red-500">Failed to load request.</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-xl shadow-secondary mt-6 border border-secondary">
+    <div className="max-w-3xl mx-auto p-6 rounded-lg  mt-6 border border-secondary">
       <h2 className="text-2xl font-semibold text-primary mb-4 text-center">
         Donation Request Details
       </h2>
@@ -132,7 +132,7 @@ const DonationRequestDetails = () => {
       >
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-md bg-white rounded-lg p-6 shadow">
+          <Dialog.Panel className="w-full max-w-md bg-white rounded-lg p-6 border border-primary">
             <Dialog.Title className="text-lg font-bold mb-4">
               Confirm Donation
             </Dialog.Title>

@@ -8,7 +8,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import AddPlant from "../pages/Dashboard/Seller/AddPlant";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import Profile from "../pages/Dashboard/Common/Profile";
-import Statistics from "../pages/Dashboard/Common/Statistics";
+// import Statistics from "../pages/Dashboard/Common/Statistics";
 import MainLayout from "../layouts/MainLayout";
 import MyInventory from "../pages/Dashboard/Seller/MyInventory";
 import ManageOrders from "../pages/Dashboard/Seller/ManageOrders";
@@ -36,6 +36,7 @@ import AdminHome from "../pages/Dashboard/Admin/AdminHome";
 import DonorDashboardHome from "../pages/Dashboard/Donor/DonorDashboardHome";
 import VolunteerHome from "../pages/Dashboard/Volunteer/VolunteerHome";
 import VolunteerMenu from "../components/Dashboard/Sidebar/Menu/VolunteerMenu";
+import UpdateProfile from "../pages/Dashboard/Common/UpdateProfile";
 
 export const router = createBrowserRouter([
   {
@@ -103,16 +104,6 @@ export const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp />,
-        loader: async () => {
-          const districtsData = await fetch("/districts.json").then((res) =>
-            res.json()
-          );
-          const upazilasData = await fetch("/upazilas.json").then((res) =>
-            res.json()
-          );
-
-          return { districtsData, upazilasData };
-        },
       },
     ],
   },
@@ -161,29 +152,38 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "add-plant",
+
+        path : 'update-profile',
         element: (
           <PrivateRoute>
-            <AddPlant />
+            <UpdateProfile />
           </PrivateRoute>
         ),
       },
-      {
-        path: "my-inventory",
-        element: (
-          <PrivateRoute>
-            <MyInventory />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "manage-users",
-        element: (
-          <PrivateRoute>
-            <ManageUsers />
-          </PrivateRoute>
-        ),
-      },
+      // {
+      //   path: "add-plant",
+      //   element: (
+      //     <PrivateRoute>
+      //       <AddPlant />
+      //     </PrivateRoute>
+      //   ),
+      // },
+      // {
+      //   path: "my-inventory",
+      //   element: (
+      //     <PrivateRoute>
+      //       <MyInventory />
+      //     </PrivateRoute>
+      //   ),
+      // },
+      // {
+      //   path: "manage-users",
+      //   element: (
+      //     <PrivateRoute>
+      //       <ManageUsers />
+      //     </PrivateRoute>
+      //   ),
+      // },
       {
         path: "all-users",
         element: (

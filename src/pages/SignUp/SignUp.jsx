@@ -7,10 +7,13 @@ import useAuth from "../../hooks/useAuth";
 import useAxios from "../../hooks/useAxios";
 import saveOrUpdateUser from "../../utils/saveOrUpdateUser";
 import { FcGoogle } from "react-icons/fc";
+import useDistrictsUpazilas from "../../hooks/useDistrictsUpozilas";
+import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const SignUp = () => {
-  const { upazilasData, districtsData } = useLoaderData();
+  // const { upazilasData, districtsData } = useLoaderData();
+  const { districts : districtsData, upazilas : upazilasData , loading : dataLoading } = useDistrictsUpazilas()
   const {
     register,
     handleSubmit,
@@ -23,15 +26,15 @@ const SignUp = () => {
   const [upazilas, setUpazilas] = useState([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
 
-  const districtsList = districtsData[2].data.sort((a, b) =>
-    a.name.localeCompare(b.name));
-  const upazilasList = upazilasData[2].data.sort((a, b) =>
-    a.name.localeCompare(b.name));
+  // const districtsList = districtsData[2].data.sort((a, b) =>
+  //   a.name.localeCompare(b.name));
+  // const upazilasList = upazilasData[2].data.sort((a, b) =>
+  //   a.name.localeCompare(b.name));
 
   useEffect(() => {
-    setDistricts(districtsList);
-    setUpazilas(upazilasList);
-  }, [districtsList, upazilasList]);
+    setDistricts(districtsData);
+    setUpazilas(upazilasData);
+  }, [districtsData, upazilasData]);
 
   // console.log(upazilas);
   const selectedDistrict = watch("district");
@@ -125,38 +128,42 @@ const SignUp = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const { user } = await signInWithGoogle();
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     const { user } = await signInWithGoogle();
 
-      const userData = {
-        name: user?.displayName,
-        email: user?.email,
-        image: user?.photoURL,
-      };
+  //     const userData = {
+  //       name: user?.displayName,
+  //       email: user?.email,
+  //       image: user?.photoURL,
+  //     };
 
-      await saveOrUpdateUser(userData);
+  //     await saveOrUpdateUser(userData);
 
-      Swal.fire({
-        icon: "success",
-        title: "Login Successful!",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      navigate(from, { replace: true });
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      Swal.fire({
-        icon: "error",
-        title: "Google Login Failed",
-        text: err.message,
-      });
-    }
-  };
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Login Successful!",
+  //       timer: 2000,
+  //       showConfirmButton: false,
+  //     });
+  //     navigate(from, { replace: true });
+  //   } catch (err) {
+  //     console.log(err);
+  //     setLoading(false);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Google Login Failed",
+  //       text: err.message,
+  //     });
+  //   }
+  // };
+  
+  if(dataLoading){
+    return <LoadingSpinner />
+  }
   return (
     <div className="min-h-screen flex items-center justify-center py-16">
-      <div className="w-full max-w-xl p-8 space-y-6 rounded-xl shadow-md shadow-secondary border border-secondary">
+      <div className="w-full max-w-xl p-8 space-y-6 rounded-xl  border border-secondary">
         <h2 className="text-2xl font-bold text-center text-primary">
           SignUp to RedPulseBD
         </h2>
@@ -195,9 +202,9 @@ const SignUp = () => {
             className="select select-bordered w-full"
             {...register("bloodGroup", { required: "Blood group is required" })}
           >
-            <option value="">Select Blood Group</option>
+            <option className="bg-base-200" value="">Select Blood Group</option>
             {bloodGroups.map((bg) => (
-              <option key={bg} value={bg}>
+              <option className="bg-base-200" key={bg} value={bg}>
                 {bg}
               </option>
             ))}
@@ -211,9 +218,9 @@ const SignUp = () => {
             className="select select-bordered w-full"
             {...register("district", { required: "District is required" })}
           >
-            <option value="">Select District</option>
+            <option className="bg-base-200" value="">Select District</option>
             {districts.map((d) => (
-              <option key={d.id} value={d.name}>
+              <option className="bg-base-200" key={d.id} value={d.name}>
                 {d.name}
               </option>
             ))}
@@ -228,9 +235,9 @@ const SignUp = () => {
             {...register("upazila", { required: "Upazila is required" })}
             // disabled={!filteredUpazilas.length}
           >
-            <option value="">Select Upazila</option>
+            <option className="bg-base-200" value="">Select Upazila</option>
             {filteredUpazilas.map((u) => (
-              <option key={u.id} value={u.name}>
+              <option className="bg-base-200" key={u.id} value={u.name}>
                 {u.name}
               </option>
             ))}
@@ -298,7 +305,7 @@ const SignUp = () => {
             </Link>
           </p>
         </form>
-        <h3 className="text-primary text-center text-xl font-bold">OR</h3>
+        {/* <h3 className="text-primary text-center text-xl font-bold">OR</h3>
         <div
           onClick={handleGoogleSignIn}
           className="btn btn-primary mt-2 w-full"
@@ -306,7 +313,7 @@ const SignUp = () => {
           <FcGoogle size={32} />
 
           <p>Continue with Google</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

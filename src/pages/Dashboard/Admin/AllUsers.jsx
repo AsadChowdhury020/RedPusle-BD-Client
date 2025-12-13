@@ -8,9 +8,9 @@ import {
   Users
 } from "lucide-react";
 import Swal from "sweetalert2";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAxios from "../../../hooks/useAxios";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const AllUsers = () => {
   const axiosInstance = useAxios();

@@ -1,8 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
-import useAuth from "../../../Hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import useAuth from "../../../hooks/useAuth";
 
 const FundingForm = () => {
   const { user } = useAuth();

@@ -16,7 +16,6 @@ import VolunteerMenu from './Menu/VolunteerMenu'
 import DonorMenu from './Menu/DonorMenu'
 import Container from '../../Shared/Container'
 import useUserRole from '../../../hooks/useUserRole'
-// import useUserRole from '../../../Hooks/useUserRole'
 
 const Sidebar = () => {
   const { logOut } = useAuth()
