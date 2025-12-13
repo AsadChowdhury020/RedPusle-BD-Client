@@ -195,20 +195,22 @@ import { useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
 import Container from "../../components/Shared/Container";
 import useAxios from "../../hooks/useAxios";
+import useDistrictsUpazilas from "../../hooks/useDistrictsUpozilas";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const Search = () => {
   const axiosInstance = useAxios();
-  const { upazilasData, districtsData } = useLoaderData();
+  const { districts : districtsData, upazilas : upazilasData , loading : dataLoading } = useDistrictsUpazilas()
+  // const { upazilasData, districtsData } = useLoaderData();
   const [ afterSearch, setAfterSearch] = useState(false)
 
-  const districtsList = districtsData[2].data.sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
-  const upazilasList = upazilasData[2].data.sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  // const districtsList = districtsData[2].data.sort((a, b) =>
+  //   a.name.localeCompare(b.name)
+  // );
+  // const upazilasList = upazilasData[2].data.sort((a, b) =>
+  //   a.name.localeCompare(b.name)
+  // );
 
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
@@ -227,9 +229,9 @@ const Search = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    setDistricts(districtsList);
-    setUpazilas(upazilasList);
-  }, [districtsList, upazilasList]);
+    setDistricts(districtsData);
+    setUpazilas(upazilasData);
+  }, [districtsData, upazilasData]);
 
   useEffect(() => {
     const selectedDistrict = searchData.district;

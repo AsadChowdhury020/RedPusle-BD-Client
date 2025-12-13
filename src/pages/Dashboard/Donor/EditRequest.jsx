@@ -4,10 +4,12 @@ import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
-import useAxios from "../../../hooks/useAxios";
-import useAuth from "../../../Hooks/useAuth";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import useDistrictsUpazilas from "../../../hooks/useDistrictsUpozilas";
+import useAuth from "../../../hooks/useAuth";
+import useAxios from "../../../hooks/useAxios";
+
+// import useAxios from "../../../Hooks/useAxios";
 
 const EditRequest = () => {
   const { id } = useParams();
@@ -27,10 +29,13 @@ const EditRequest = () => {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { isSubmitting },
   } = useForm();
 
   const selectedDistrict = watch("recipientDistrict");
+  const selectedUpazila = watch('recipientUpazila')
+  console.log(selectedUpazila)
 
   useEffect(() => {
     setDistricts(districtsData)
@@ -40,11 +45,17 @@ const EditRequest = () => {
   useEffect(() => {
     const match = districts.find((d) => d.name === selectedDistrict);
     if (match) {
-      setFilteredUpazilas(upazilas.filter((u) => u.district_id === match.id));
+      const filteredUpazila = upazilas.filter((u) => u.district_id === match.id)
+      setFilteredUpazilas(filteredUpazila);
+      console.log(filteredUpazila)
+      if(filteredUpazila.length> 0){
+        setValue('recipientUpazila', filteredUpazila[0].name)
+      }
     } else {
       setFilteredUpazilas([]);
     }
-  }, [selectedDistrict, districts, upazilas]);
+  }, [selectedDistrict, districts, upazilas, setValue]);
+
 
   const {
     data: requestData,

@@ -121,8 +121,10 @@ const DonorDashboardHome = () => {
                     <td className="flex gap-2">
                       {/* EDIT */}
                       <Link
-                        to={`/dashboard/edit-donation/${req._id}`}
-                        className="btn btn-sm btn-outline"
+                        // to={`/dashboard/edit-donation/${req._id}`}
+                        to={`/dashboard/edit-request/${req._id}`}
+                        className="btn btn-sm btn-outline tooltip tooltip-primary"
+                        data-tip = 'Edit'
                       >
                         <Edit className="w-4 h-4" />
                       </Link>
@@ -130,15 +132,17 @@ const DonorDashboardHome = () => {
                       {/* DELETE */}
                       <button
                         onClick={() => handleDelete(req._id)}
-                        className="btn btn-sm btn-error text-white"
+                        className="btn btn-sm btn-error text-white tooltip tooltip-primary"
+                        data-tip = 'Delete'
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
 
                       {/* VIEW */}
                       <Link
-                        to={`/dashboard/donation-details/${req._id}`}
-                        className="btn btn-sm btn-info text-white"
+                        to={`/dashboard/request-details/${req._id}`}
+                        className="btn btn-sm btn-info text-white tooltip tooltip-primary"
+                        data-tip = 'View'
                       >
                         <Eye className="w-4 h-4" />
                       </Link>

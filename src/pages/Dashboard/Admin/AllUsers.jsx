@@ -99,7 +99,7 @@ const AllUsers = () => {
   if (isError) return <div className="text-red-500">Failed to load users.</div>;
 
   return (
-    <div className="p-6 bg-base-100 shadow-lg shadow-secondary rounded-md mt-6">
+    <div className="p-6 bg-base-100 border border-primary rounded-md mt-6">
       <h2 className="text-xl font-semibold mb-4 text-primary ">All Users</h2>
 
       <div className="flex justify-between mb-4">
@@ -121,7 +121,8 @@ const AllUsers = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* <div className="overflow-x-auto"> */}
+      <div className="overflow-x-auto border border-secondary rounded-md">
         <table className="table table-zebra w-full">
           <thead>
             <tr>

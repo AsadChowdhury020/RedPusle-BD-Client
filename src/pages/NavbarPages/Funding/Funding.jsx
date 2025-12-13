@@ -44,7 +44,7 @@ const Funding = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto border rounded-lg">
+        <div className="overflow-x-auto border border-primary rounded-lg">
           <table className="table w-full">
             <thead>
               <tr>

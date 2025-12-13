@@ -105,7 +105,7 @@ const CreateDonationRequest = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-base-100 rounded-lg shadow-lg mt-10 shadow-secondary border border-secondary">
+    <div className="max-w-3xl mx-auto p-6 bg-base-100 rounded-lg  mt-10 border border-secondary">
       <h2 className="text-xl font-bold text-primary mb-6">
         Create Donation Request
       </h2>

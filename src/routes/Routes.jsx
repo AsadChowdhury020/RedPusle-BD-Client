@@ -35,6 +35,7 @@ import FundingCancel from "../pages/NavbarPages/Funding/FundingCancel";
 import AdminHome from "../pages/Dashboard/Admin/AdminHome";
 import DonorDashboardHome from "../pages/Dashboard/Donor/DonorDashboardHome";
 import VolunteerHome from "../pages/Dashboard/Volunteer/VolunteerHome";
+import VolunteerMenu from "../components/Dashboard/Sidebar/Menu/VolunteerMenu";
 
 export const router = createBrowserRouter([
   {
@@ -133,10 +134,29 @@ export const router = createBrowserRouter([
       //   ),
       // },
       {
-        index: true,
+        // index: true,
+        path : 'admin',
         element: (
           <PrivateRoute>
             <AdminHome />
+          </PrivateRoute>
+        ),
+      },
+      {
+         // index: true,
+        path : 'volunteer',
+        element: (
+          <PrivateRoute>
+            <VolunteerMenu />
+          </PrivateRoute>
+        ),
+      },
+      {
+        // index: true,
+        path : 'donor',
+        element: (
+          <PrivateRoute>
+            <DonorDashboardHome />
           </PrivateRoute>
         ),
       },

@@ -6,6 +6,7 @@ import useAxios from "../../../hooks/useAxios";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useUserRole from "../../../Hooks/useUserRole";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
+import { CheckCircle, Edit, Eye, Trash2, XCircle } from "lucide-react";
 
 const statusOptions = ["all", "pending", "inprogress", "done", "canceled"];
 
@@ -14,7 +15,7 @@ const AllBloodDonationRequests = () => {
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const { role, roleLoading } = useUserRole();
-  console.log(role)
+  console.log(role);
 
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -170,17 +171,19 @@ const AllBloodDonationRequests = () => {
                               onClick={() =>
                                 handleStatusChange(item._id, "done")
                               }
-                              className="btn btn-xs btn-success"
+                              className="btn btn-sm btn-success tooltip tooltip-primary"
+                              data-tip="Done"
                             >
-                              Done
+                              <CheckCircle className="h-4 w-4" />
                             </button>
                             <button
                               onClick={() =>
                                 handleStatusChange(item._id, "canceled")
                               }
-                              className="btn btn-xs btn-error"
+                              className="btn btn-sm btn-warning tooltip tooltip-primary"
+                              data-tip="Cancel"
                             >
-                              Cancel
+                              <XCircle className="h-4 w-4" />
                             </button>
                           </>
                         )}
@@ -190,23 +193,26 @@ const AllBloodDonationRequests = () => {
                             onClick={() =>
                               navigate(`/dashboard/edit-request/${item._id}`)
                             }
-                            className="btn btn-xs btn-warning"
+                            className="btn btn-sm btn-outline tooltip tooltip-primary"
+                            data-tip="Edit"
                           >
-                            Edit
+                            <Edit className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(item._id)}
-                            className="btn btn-xs btn-outline btn-error"
+                            className="btn btn-sm btn-error text-white tooltip tooltip-primary"
+                            data-tip="Delete"
                           >
-                            Delete
+                            <Trash2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() =>
                               navigate(`/dashboard/request-details/${item._id}`)
                             }
-                            className="btn btn-xs btn-info"
+                            className="btn btn-sm btn-info text-white tooltip tooltip-primary"
+                            data-tip="View"
                           >
-                            View
+                            <Eye className="w-4 h-4" />
                           </button>
                         </>
                       )}
@@ -243,8 +249,10 @@ const AllBloodDonationRequests = () => {
                                   onClick={() =>
                                     handleStatusChange(item._id, "done")
                                   }
+                                  className="btn btn-sm btn-success tooltip tooltip-primary"
+                                  data-tip="Done"
                                 >
-                                  ✅ Done
+                                  <CheckCircle className="h-4 w-4" />
                                 </button>
                               </li>
                               <li>
@@ -252,8 +260,10 @@ const AllBloodDonationRequests = () => {
                                   onClick={() =>
                                     handleStatusChange(item._id, "canceled")
                                   }
+                                  className="btn btn-sm btn-error tooltip tooltip-primary"
+                                  data-tip="Cancel"
                                 >
-                                  ❌ Cancel
+                                  <XCircle className="h-4 w-4" />
                                 </button>
                               </li>
                             </>
@@ -268,13 +278,19 @@ const AllBloodDonationRequests = () => {
                                     `/dashboard/edit-request/${item._id}`
                                   )
                                 }
+                                className="btn btn-sm btn-outline tooltip tooltip-primary"
+                                data-tip="Edit"
                               >
-                                ✏️ Edit
+                                <Edit className="w-4 h-4" />
                               </button>
                             </li>
                             <li>
-                              <button onClick={() => handleDelete(item._id)}>
-                                🗑️ Delete
+                              <button
+                                onClick={() => handleDelete(item._id)}
+                                className="btn btn-sm btn-error text-white tooltip tooltip-primary"
+                                data-tip="Delete"
+                              >
+                                <Trash2 className="w-4 h-4" />
                               </button>
                             </li>
                             <li>
@@ -284,8 +300,10 @@ const AllBloodDonationRequests = () => {
                                     `/dashboard/request-details/${item._id}`
                                   )
                                 }
+                                className="btn btn-sm btn-info text-white tooltip tooltip-primary"
+                                data-tip="View"
                               >
-                                🔍 View
+                                <Eye className="w-4 h-4" />
                               </button>
                             </li>
                           </>

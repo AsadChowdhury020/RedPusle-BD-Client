@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import logo from "../../../assets/images/Logo.png";
 import { Link, NavLink } from "react-router";
-import useAuth from "../../../Hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
+import useUserRole from "../../../hooks/useUserRole";
 
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
+  const { role } = useUserRole()
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogOut = () => {
@@ -90,7 +92,9 @@ const Navbar = () => {
 
                   <li>
                     <Link
-                      to="/dashboard"
+                      // to="/dashboard"
+                      to = {`/dashboard/${role}`}
+
                       className="px-4 py-3 hover:bg-neutral-100 transition font-semibold"
                     >
                       Dashboard

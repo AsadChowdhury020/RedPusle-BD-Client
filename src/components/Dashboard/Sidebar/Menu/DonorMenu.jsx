@@ -28,7 +28,7 @@ const DonorMenu = () => {
 
       {/* <BecomeSellerModal closeModal={closeModal} isOpen={isOpen} /> */}
 
-      <MenuItem icon={IoHome  } label='Donor Home' address='donor-home' />
+      <MenuItem icon={IoHome  } label='Home' address='donor-home' />
       <MenuItem icon={IoIosCreate } label='Create Donation Request' address='create-donation-request' />
       <MenuItem icon={BsFillFilePlusFill  } label='My Donation Requests' address='my-donation-requests' />
     </>

@@ -17,7 +17,7 @@ const VolunteerMenu = () => {
         label='Manage Orders'
         address='manage-orders'
       /> */}
-      <MenuItem icon={IoHome } label='Volunteer Home' address='volunteer-home' />
+      <MenuItem icon={IoHome } label='Home' address='volunteer-home' />
        <MenuItem icon={TfiList } label='All Blood Donation Requests' address='all-blood-donation-requests' />
     </>
   )
