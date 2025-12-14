@@ -2,18 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import useAxios from "../../../hooks/useAxios";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useDistrictsUpazilas from "../../../hooks/useDistrictsUpozilas";
 
 const CreateDonationRequest = () => {
   const { user, loading: authLoading } = useAuth();
   const axiosInstance = useAxios();
   const axiosSecure = useAxiosSecure()
 
-  const { upazilasData, districtsData } = useLoaderData();
+  // const { upazilasData, districtsData } = useLoaderData();
+  const { districts : districtsData, upazilas : upazilasData , loading : dataLoading } = useDistrictsUpazilas()
 
   const {
     register,
@@ -29,17 +31,17 @@ const CreateDonationRequest = () => {
   const selectedDistrict = watch("recipientDistrict");
   const navigate = useNavigate();
 
-  const districtsList = districtsData[2].data.sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
-  const upazilasList = upazilasData[2].data.sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  // const districtsList = districtsData[2].data.sort((a, b) =>
+  //   a.name.localeCompare(b.name)
+  // );
+  // const upazilasList = upazilasData[2].data.sort((a, b) =>
+  //   a.name.localeCompare(b.name)
+  // );
 
   useEffect(() => {
-    setDistricts(districtsList);
-    setUpazilas(upazilasList);
-  }, [districtsList, upazilasList]);
+    setDistricts(districtsData);
+    setUpazilas(upazilasData);
+  }, [districtsData, upazilasData]);
 
   useEffect(() => {
     const match = districts.find((d) => d.name === selectedDistrict);

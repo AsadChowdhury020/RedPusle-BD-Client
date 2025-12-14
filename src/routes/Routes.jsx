@@ -2,17 +2,10 @@ import Home from "../pages/Home/Home/Home";
 import ErrorPage from "../components/Shared/ErrorPage";
 import Login from "../pages/Login/Login";
 import SignUp from "../pages/SignUp/SignUp";
-import PlantDetails from "../pages/PlantDetails/PlantDetails";
 import PrivateRoute from "./PrivateRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
-import AddPlant from "../pages/Dashboard/Seller/AddPlant";
-import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import Profile from "../pages/Dashboard/Common/Profile";
-// import Statistics from "../pages/Dashboard/Common/Statistics";
 import MainLayout from "../layouts/MainLayout";
-import MyInventory from "../pages/Dashboard/Seller/MyInventory";
-import ManageOrders from "../pages/Dashboard/Seller/ManageOrders";
-// import MyOrders from "../pages/Dashboard/Volunteer/MyOrders";
 import { createBrowserRouter } from "react-router";
 import AboutUs from "../pages/NavbarPages/AboutUs";
 import Blogs from "../pages/NavbarPages/Blogs";
@@ -49,41 +42,26 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/plant/:id",
-        element: <PlantDetails />,
-      },
-      {
         path: "/reviews",
         element: <Reviews />,
         loader: async () => {
           return await fetch("/reviews.json").then((res) => res.json());
         },
       },
-      { path: "/donation-requests", element: <DonationRequests /> },
+      { path: "/donation-requests",
+         element: <DonationRequests /> },
       {
         path: "/why-choose",
-        element: <WhyChoose />,
-        // loader: () => {
-        //   return fetch("./whyChoose.json");
-        // },
-        // loader: () => fetch("/whyChoose.json").then((res) => res.json()),
+        element: <WhyChoose />
       },
       {
         path: "/search",
-        element: <Search />,
-        loader: async () => {
-          const districtsData = await fetch("/districts.json").then((res) =>
-            res.json()
-          );
-          const upazilasData = await fetch("/upazilas.json").then((res) =>
-            res.json()
-          );
-
-          return { districtsData, upazilasData };
-        },
+        element: <Search />
       },
-      { path: "/blogs", element: <Blogs /> },
-      { path: "/blog-details/:id", element: <BlogDetails /> },
+      { path: "/blogs", 
+        element: <Blogs /> },
+      { path: "/blog-details/:id", 
+        element: <BlogDetails /> },
       {
         path: "/create-blog",
         element: (
@@ -92,15 +70,20 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      { path: "/about-us", element: <AboutUs /> },
-      { path: "/funding", element: <Funding /> },
-      { path: "/funding-success", element: <FundingSuccess /> },
-      { path: "/funding-cancel", element: <FundingCancel /> },
+      { path: "/about-us",
+         element: <AboutUs /> },
+      { path: "/funding", 
+        element: <Funding /> },
+      { path: "/funding-success",
+         element: <FundingSuccess /> },
+      { path: "/funding-cancel",
+         element: <FundingCancel /> },
       {
         path: "/funding/form",
         element: <FundingForm />,
       },
-      { path: "/login", element: <Login /> },
+      { path: "/login",
+         element: <Login /> },
       {
         path: "/signup",
         element: <SignUp />,
@@ -116,16 +99,7 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
-      // {
-      //   index: true,
-      //   element: (
-      //     <PrivateRoute>
-      //       <Statistics />
-      //     </PrivateRoute>
-      //   ),
-      // },
       {
-        // index: true,
         path : 'admin',
         element: (
           <PrivateRoute>
@@ -134,7 +108,6 @@ export const router = createBrowserRouter([
         ),
       },
       {
-         // index: true,
         path : 'volunteer',
         element: (
           <PrivateRoute>
@@ -143,7 +116,6 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        // index: true,
         path : 'donor',
         element: (
           <PrivateRoute>
@@ -160,30 +132,6 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      // {
-      //   path: "add-plant",
-      //   element: (
-      //     <PrivateRoute>
-      //       <AddPlant />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      // {
-      //   path: "my-inventory",
-      //   element: (
-      //     <PrivateRoute>
-      //       <MyInventory />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      // {
-      //   path: "manage-users",
-      //   element: (
-      //     <PrivateRoute>
-      //       <ManageUsers />
-      //     </PrivateRoute>
-      //   ),
-      // },
       {
         path: "all-users",
         element: (
@@ -241,18 +189,6 @@ export const router = createBrowserRouter([
             <Profile />
           </PrivateRoute>
         ),
-      },
-      // {
-      //   path: "my-orders",
-      //   element: (
-      //     <PrivateRoute>
-      //       <MyOrders />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      {
-        path: "manage-orders",
-        element: <ManageOrders />,
       },
       {
         path: "all-blood-donation-requests",

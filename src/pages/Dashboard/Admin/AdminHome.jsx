@@ -2,30 +2,31 @@ import React, { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import { Users, HeartHandshake, DollarSign } from "lucide-react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import DailyRequestsChart from "./Charts/DailyRequestsChart";
+import WeeklyRequestsChart from "./Charts/WeeklyRequestsChart";
+import MonthlyRequestsChart from "./Charts/MonthlyRequestsChart";
 
 const AdminHome = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
+  // For status
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalFunds: 0,
     totalRequests: 0,
   });
 
-
-const getTotalFund = async () => {
-  const res = await axiosSecure.get("/funding/total");
-  return res.data.total;
-};
-
+  const getTotalFund = async () => {
+    const res = await axiosSecure.get("/funding/total");
+    return res.data.total;
+  };
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const usersRes = await axiosSecure.get("/users");
         const requestsRes = await axiosSecure.get("/donation-requests");
-
 
         setStats({
           totalUsers: usersRes.data.length,
@@ -38,9 +39,28 @@ const getTotalFund = async () => {
     };
 
     fetchStats();
-  }, []);
+  }, [getTotalFund, axiosSecure]);
 
-//   console.log(stats.totalFunds);
+  //   For status
+
+  const [chartData, setChartData] = useState({
+    daily: [],
+    weekly: [],
+    monthly: [],
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axiosSecure.get("/donation-requests/stats");
+        setChartData(res.data);
+      } catch (error) {
+        console.error("Chart stats error:", error);
+      }
+    };
+    fetchStats();
+  }, [axiosSecure]);
+
   return (
     <div className="p-6">
       {/* Welcome Section */}
@@ -63,7 +83,9 @@ const getTotalFund = async () => {
         <div className="p-6 bg-white rounded-xl shadow-md border border-secondary flex items-center gap-4">
           <DollarSign className="w-12 h-12 text-green-600" />
           <div>
-            <h3 className="text-2xl font-bold">${stats?.totalFunds?.toFixed(2)}</h3>
+            <h3 className="text-2xl font-bold">
+              ${stats?.totalFunds?.toFixed(2)}
+            </h3>
             <p className="text-gray-600">Total Funding</p>
           </div>
         </div>
@@ -76,6 +98,17 @@ const getTotalFund = async () => {
             <p className="text-gray-600">Total Blood Donation Requests</p>
           </div>
         </div>
+      </div>
+      {/* <div>
+        <DailyRequestsChart></DailyRequestsChart>
+        <WeeklyRequestsChart></WeeklyRequestsChart>
+        <MonthlyRequestsChart></MonthlyRequestsChart>
+      </div> */}
+
+      <div className="space-y-8 mt-10">
+        <DailyRequestsChart data={chartData.daily || []} />
+        <WeeklyRequestsChart data={chartData.weekly || []} />
+        <MonthlyRequestsChart data={chartData.monthly || []} />
       </div>
     </div>
   );

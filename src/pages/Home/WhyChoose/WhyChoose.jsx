@@ -93,7 +93,7 @@ const WhyChoose = () => {
             {features.map((feature, idx) => (
               <div
                 key={idx}
-                className="border border-secondary p-6 rounded-xl shadow-md hover:shadow-sm transition shadow-secondary"
+                className="bg-white p-6 rounded-xl shadow text-center"
               >
                 <div className="mb-4">{feature.icon}</div>
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-400 mb-2">

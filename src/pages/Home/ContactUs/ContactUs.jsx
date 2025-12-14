@@ -54,7 +54,7 @@ const ContactUs = () => {
           {/* Contact Form */}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="p-6 rounded-xl shadow-md space-y-4 border border-secondary"
+            className="p-6 rounded-xl space-y-4 border border-secondary"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>

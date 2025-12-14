@@ -61,12 +61,12 @@ const Blogs = () => {
             {blogs.map((blog) => (
               <div
                 key={blog._id}
-                className=" shadow-lg shadow-secondary rounded-lg overflow-hidden hover:shadow-lg transition"
+                className="border border-primary rounded-xl p-2 hover:scale-105 transition-transform duration-300"
               >
                 <img
                   src={blog.thumbnail}
                   alt={blog.title}
-                  className="w-full h-60 object-cover"
+                  className="w-full rounded-xl h-60 object-cover"
                 />
                 <div className="p-4">
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-400 mb-2">

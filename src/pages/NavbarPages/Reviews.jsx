@@ -15,13 +15,6 @@ const Reviews = () => {
 
   const submitReview = (newReview) => {
     console.log("New Review Submitted:", newReview);
-
-    // TODO: send to backend
-    // fetch("/api/reviews", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(newReview),
-    // });
   };
 
   return (
