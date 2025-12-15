@@ -39,12 +39,13 @@ const FAQSection = () => {
     <Container>
       <section className="py-16 bg-base-200">
         <div className="max-w-4xl mx-auto px-4">
+
           {/* Section Header */}
           <div className="text-center mb-10">
-            <h2 className="text-4xl md:text-4xl font-bold text-primary">
+            <h2 className="text-4xl font-bold text-primary">
               Frequently Asked Questions
             </h2>
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3 text-base-content/70">
               Find answers to common questions about blood donation and
               RedPulseBD.
             </p>
@@ -55,13 +56,15 @@ const FAQSection = () => {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className="collapse collapse-arrow bg-white rounded-xl"
+                className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-xl"
               >
                 <input type="checkbox" />
-                <div className="collapse-title text-lg font-medium">
+
+                <div className="collapse-title text-lg font-medium text-base-content">
                   {faq.question}
                 </div>
-                <div className="collapse-content text-gray-600">
+
+                <div className="collapse-content text-base-content/70">
                   <p>{faq.answer}</p>
                 </div>
               </div>
@@ -69,7 +72,7 @@ const FAQSection = () => {
           </div>
 
           {/* Footer Note */}
-          <p className="mt-8 text-center text-sm text-gray-500">
+          <p className="mt-8 text-center text-sm text-base-content/60">
             Still have questions? Feel free to contact our support team anytime.
           </p>
         </div>

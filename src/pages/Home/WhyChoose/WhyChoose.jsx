@@ -6,10 +6,8 @@ import {
   Clock,
   ShieldCheck,
   BellRing,
-  Medal,
   Heart,
   MapPin,
-  Globe2,
 } from "lucide-react";
 import Container from "../../../components/Shared/Container";
 import { TbNetwork } from "react-icons/tb";
@@ -50,7 +48,7 @@ const features = [
     description: "Donors receive instant notifications when a match is found.",
   },
   {
-    icon: <TfiGift  className="w-8 h-8 text-primary" />,
+    icon: <TfiGift className="w-8 h-8 text-primary" />,
     title: "Reward System",
     description:
       "Earn badges and recognition for contributing to saving lives.",
@@ -78,33 +76,35 @@ const WhyChoose = () => {
   return (
     <Container>
       <section className="py-16">
-        <div>
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-4xl font-bold text-primary">
-              Why Choose LifeDrop?
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mt-3 max-w-xl mx-auto">
-              We strive to ensure that every donation experience is smooth,
-              secure, and truly life-changing.
-            </p>
-          </div>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-primary">
+            Why Choose RedPulseBD?
+          </h2>
+          <p className="mt-3 max-w-xl mx-auto text-base-content/70">
+            We strive to ensure that every donation experience is smooth,
+            secure, and truly life-changing.
+          </p>
+        </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, idx) => (
-              <div
-                key={idx}
-                className="bg-white p-6 rounded-xl shadow text-center"
-              >
-                <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-400 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-500">
-                  {feature.description}
-                </p>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature, idx) => (
+            <div
+              key={idx}
+              className="bg-base-100 p-6 rounded-xl border border-base-300 shadow-sm text-center hover:shadow-md transition"
+            >
+              <div className="mb-4 flex justify-center">
+                {feature.icon}
               </div>
-            ))}
-          </div>
+
+              <h3 className="text-lg font-semibold text-base-content mb-2">
+                {feature.title}
+              </h3>
+
+              <p className="text-base-content/70">
+                {feature.description}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
     </Container>

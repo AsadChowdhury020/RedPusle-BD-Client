@@ -2,20 +2,23 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import useAxios from "../../../hooks/useAxios";
+import {
+  CheckCircle,
+  Edit,
+  Eye,
+  Trash2,
+  XCircle,
+} from "lucide-react";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
-import { CheckCircle, Edit, Eye, Trash2, XCircle } from "lucide-react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useUserRole from "../../../hooks/useUserRole";
 
 const statusOptions = ["all", "pending", "inprogress", "done", "canceled"];
 
 const AllBloodDonationRequests = () => {
-  const axiosInstance = useAxios();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const { role, roleLoading } = useUserRole();
-  console.log(role);
 
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +36,7 @@ const AllBloodDonationRequests = () => {
     },
   });
 
-  // Filtered and paginated data
+  /* Filter + Pagination */
   const filteredData =
     filterStatus === "all"
       ? requests
@@ -45,10 +48,9 @@ const AllBloodDonationRequests = () => {
     currentPage * itemsPerPage
   );
 
-  // Handle Status Change
+  /* Update Status */
   const handleStatusChange = async (id, newStatus) => {
     try {
-      // await axiosInstance.patch(`/donation-requests/${id}`, {
       await axiosSecure.patch(`/donation-requests/${id}`, {
         status: newStatus,
       });
@@ -59,29 +61,22 @@ const AllBloodDonationRequests = () => {
     }
   };
 
-  // Handle Delete
+  /* Delete */
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You are about to delete this donation request.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // await axiosInstance.delete(`/donation-requests/${id}`);
           await axiosSecure.delete(`/donation-requests/${id}`);
-          Swal.fire(
-            "Deleted!",
-            "Your donation request has been deleted.",
-            "success"
-          );
+          Swal.fire("Deleted!", "Donation request removed.", "success");
           refetch();
         } catch {
-          Swal.fire("Error", "Failed to delete", "error");
+          Swal.fire("Error", "Failed to delete request", "error");
         }
       }
     });
@@ -90,15 +85,15 @@ const AllBloodDonationRequests = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl text-primary font-semibold mb-4 text-center">
+    <div className="p-6 bg-base-100 border border-base-300 rounded-xl">
+      <h2 className="text-xl font-semibold text-primary text-center mb-6">
         All Blood Donation Requests
       </h2>
 
       {/* Filter */}
-      <div className="mb-4">
+      <div className="mb-4 flex justify-between items-center">
         <select
-          className="select select-bordered"
+          className="select select-bordered bg-base-100 text-base-content"
           value={filterStatus}
           onChange={(e) => {
             setFilterStatus(e.target.value);
@@ -114,14 +109,14 @@ const AllBloodDonationRequests = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto border border-secondary rounded-md">
+      <div className="overflow-x-auto border border-base-300 rounded-md">
         <table className="table w-full">
           <thead>
-            <tr className="bg-base-200">
+            <tr className="bg-base-200 text-base-content">
               <th>#</th>
               <th>Recipient</th>
               <th>Location</th>
-              <th>Date </th>
+              <th>Date</th>
               <th>Time</th>
               <th>Blood</th>
               <th>Status</th>
@@ -129,16 +124,17 @@ const AllBloodDonationRequests = () => {
               <th>Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {currentData.length === 0 ? (
               <tr>
-                <td colSpan="8" className="text-center py-4">
+                <td colSpan="9" className="text-center py-6 text-base-content/60">
                   No donation requests found.
                 </td>
               </tr>
             ) : (
               currentData.map((item, index) => (
-                <tr key={item._id}>
+                <tr key={item._id} className="text-base-content">
                   <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td>{item.recipientName}</td>
                   <td>
@@ -148,168 +144,82 @@ const AllBloodDonationRequests = () => {
                   <td>{item.donationTime}</td>
                   <td>{item.bloodGroup}</td>
                   <td className="capitalize">{item.status}</td>
+
                   <td>
                     {item.status === "inprogress" ? (
                       <>
-                        <p>{item.donor.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {item.donor.email}
+                        <p>{item.donor?.name}</p>
+                        <p className="text-sm text-base-content/60">
+                          {item.donor?.email}
                         </p>
                       </>
                     ) : (
                       "-"
                     )}
                   </td>
-                  <td className="space-x-1">
-                    {/* ✅ For large screens: show all buttons inline */}
-                    <div className="hidden lg:flex flex-wrap gap-1">
-                      {item.status === "inprogress" &&
-                        !roleLoading &&
-                        (role === "admin" || role === "volunteer") && (
-                          <>
-                            <button
-                              onClick={() =>
-                                handleStatusChange(item._id, "done")
-                              }
-                              className="btn btn-sm btn-success tooltip tooltip-primary"
-                              data-tip="Done"
-                            >
-                              <CheckCircle className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleStatusChange(item._id, "canceled")
-                              }
-                              className="btn btn-sm btn-warning tooltip tooltip-primary"
-                              data-tip="Cancel"
-                            >
-                              <XCircle className="h-4 w-4" />
-                            </button>
-                          </>
-                        )}
-                      {!roleLoading && role === "admin" && (
+
+                  <td className="flex flex-wrap gap-1">
+                    {item.status === "inprogress" &&
+                      !roleLoading &&
+                      (role === "admin" || role === "volunteer") && (
                         <>
                           <button
                             onClick={() =>
-                              navigate(`/dashboard/edit-request/${item._id}`)
+                              handleStatusChange(item._id, "done")
                             }
-                            className="btn btn-sm btn-outline tooltip tooltip-primary"
-                            data-tip="Edit"
+                            className="btn btn-sm btn-success tooltip"
+                            data-tip="Done"
                           >
-                            <Edit className="w-4 h-4" />
+                            <CheckCircle className="w-4 h-4" />
                           </button>
-                          <button
-                            onClick={() => handleDelete(item._id)}
-                            className="btn btn-sm btn-error text-white tooltip tooltip-primary"
-                            data-tip="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+
                           <button
                             onClick={() =>
-                              navigate(`/dashboard/request-details/${item._id}`)
+                              handleStatusChange(item._id, "canceled")
                             }
-                            className="btn btn-sm btn-info text-white tooltip tooltip-primary"
-                            data-tip="View"
+                            className="btn btn-sm btn-warning tooltip"
+                            data-tip="Cancel"
                           >
-                            <Eye className="w-4 h-4" />
+                            <XCircle className="w-4 h-4" />
                           </button>
                         </>
                       )}
-                    </div>
 
-                    {/* ✅ For smaller screens: show dropdown menu */}
-                    <div
-                      className={`dropdown dropdown-left lg:hidden ${
-                        index >= currentData.length - 2
-                          ? "dropdown-top"
-                          : "dropdown-bottom"
-                      }`}
-                    >
-                      {item.status === "inprogress" && (
-                        <div
-                          tabIndex={0}
-                          role="button"
-                          className="btn btn-xs btn-outline m-1"
+                    {!roleLoading && role === "admin" && (
+                      <>
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/dashboard/edit-request/${item._id}`
+                            )
+                          }
+                          className="btn btn-sm btn-outline tooltip"
+                          data-tip="Edit"
                         >
-                          Actions
-                        </div>
-                      )}
+                          <Edit className="w-4 h-4" />
+                        </button>
 
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
-                      >
-                        {item.status === "inprogress" &&
-                          !roleLoading &&
-                          (role === "admin" || role === "volunteer") && (
-                            <>
-                              <li>
-                                <button
-                                  onClick={() =>
-                                    handleStatusChange(item._id, "done")
-                                  }
-                                  className="btn btn-sm btn-success tooltip tooltip-primary"
-                                  data-tip="Done"
-                                >
-                                  <CheckCircle className="h-4 w-4" />
-                                </button>
-                              </li>
-                              <li>
-                                <button
-                                  onClick={() =>
-                                    handleStatusChange(item._id, "canceled")
-                                  }
-                                  className="btn btn-sm btn-error tooltip tooltip-primary"
-                                  data-tip="Cancel"
-                                >
-                                  <XCircle className="h-4 w-4" />
-                                </button>
-                              </li>
-                            </>
-                          )}
+                        <button
+                          onClick={() => handleDelete(item._id)}
+                          className="btn btn-sm btn-error tooltip"
+                          data-tip="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
 
-                        {!roleLoading && role === "admin" && (
-                          <>
-                            <li>
-                              <button
-                                onClick={() =>
-                                  navigate(
-                                    `/dashboard/edit-request/${item._id}`
-                                  )
-                                }
-                                className="btn btn-sm btn-outline tooltip tooltip-primary"
-                                data-tip="Edit"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                onClick={() => handleDelete(item._id)}
-                                className="btn btn-sm btn-error text-white tooltip tooltip-primary"
-                                data-tip="Delete"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                onClick={() =>
-                                  navigate(
-                                    `/dashboard/request-details/${item._id}`
-                                  )
-                                }
-                                className="btn btn-sm btn-info text-white tooltip tooltip-primary"
-                                data-tip="View"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </button>
-                            </li>
-                          </>
-                        )}
-                      </ul>
-                    </div>
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/dashboard/request-details/${item._id}`
+                            )
+                          }
+                          className="btn btn-sm btn-info tooltip"
+                          data-tip="View"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))
@@ -319,18 +229,22 @@ const AllBloodDonationRequests = () => {
       </div>
 
       {/* Pagination */}
-      <div className="mt-4 flex justify-center gap-2">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-          <button
-            key={pageNum}
-            onClick={() => setCurrentPage(pageNum)}
-            className={`btn btn-sm ${
-              pageNum === currentPage ? "btn-primary" : "btn-ghost"
-            }`}
-          >
-            {pageNum}
-          </button>
-        ))}
+      <div className="mt-6 flex justify-center gap-2">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+          (pageNum) => (
+            <button
+              key={pageNum}
+              onClick={() => setCurrentPage(pageNum)}
+              className={`btn btn-sm ${
+                pageNum === currentPage
+                  ? "btn-primary"
+                  : "btn-ghost"
+              }`}
+            >
+              {pageNum}
+            </button>
+          )
+        )}
       </div>
     </div>
   );

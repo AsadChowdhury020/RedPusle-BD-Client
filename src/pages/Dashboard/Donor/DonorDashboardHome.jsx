@@ -4,6 +4,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 
 const DonorDashboardHome = () => {
   const { user } = useAuth();
@@ -22,17 +23,16 @@ const DonorDashboardHome = () => {
           `/donation-requests/email?email=${user.email}`
         );
 
-        // only pick 3 recent
         setRecentRequests(res.data.slice(0, 3));
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         setLoading(false);
       }
     };
 
     fetchRequests();
-  }, [user]);
+  }, [user, axiosSecure]);
 
   // Delete Request Handler
   const handleDelete = (id) => {
@@ -41,44 +41,43 @@ const DonorDashboardHome = () => {
       text: "This donation request will be permanently deleted!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const res = await axiosSecure.delete(`/donation-requests/${id}`);
         if (res.data) {
           Swal.fire("Deleted!", "Your request has been deleted.", "success");
-
-          // remove from UI
           setRecentRequests((prev) => prev.filter((req) => req._id !== id));
         }
       }
     });
   };
 
-  if (loading) return <p className="p-10 text-center">Loading...</p>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="p-6">
 
-      {/* Welcome Section */}
+      {/* Welcome */}
       <h2 className="text-3xl font-bold text-primary mb-4">
         Welcome, {user?.displayName} 👋
       </h2>
 
-      {/* If donor has no donation requests yet */}
+      {/* Empty State */}
       {recentRequests.length === 0 ? (
-        <p className="text-gray-600 text-lg">
+        <p className="text-base-content/70 text-lg">
           You haven't created any donation requests yet.
         </p>
       ) : (
         <>
-          <h3 className="text-xl font-semibold mt-6 mb-3">Your Recent Requests</h3>
+          <h3 className="text-xl font-semibold text-base-content mt-6 mb-3">
+            Your Recent Requests
+          </h3>
 
-          <div className="overflow-x-auto bg-white border border-primary shadow rounded-lg">
+          {/* Table */}
+          <div className="overflow-x-auto bg-base-100 border border-base-300 shadow-sm rounded-xl">
             <table className="table w-full">
-              <thead>
+              <thead className="bg-base-200 text-base-content">
                 <tr>
                   <th>#</th>
                   <th>Recipient</th>
@@ -93,7 +92,7 @@ const DonorDashboardHome = () => {
 
               <tbody>
                 {recentRequests.map((req, i) => (
-                  <tr key={req._id}>
+                  <tr key={req._id} className="text-base-content">
                     <td>{i + 1}</td>
                     <td>{req.recipientName}</td>
                     <td>
@@ -109,10 +108,9 @@ const DonorDashboardHome = () => {
                     <td className="flex gap-2">
                       {/* EDIT */}
                       <Link
-                        // to={`/dashboard/edit-donation/${req._id}`}
                         to={`/dashboard/edit-request/${req._id}`}
-                        className="btn btn-sm btn-outline tooltip tooltip-primary"
-                        data-tip = 'Edit'
+                        className="btn btn-sm btn-outline tooltip"
+                        data-tip="Edit"
                       >
                         <Edit className="w-4 h-4" />
                       </Link>
@@ -120,8 +118,8 @@ const DonorDashboardHome = () => {
                       {/* DELETE */}
                       <button
                         onClick={() => handleDelete(req._id)}
-                        className="btn btn-sm btn-error text-white tooltip tooltip-primary"
-                        data-tip = 'Delete'
+                        className="btn btn-sm btn-error tooltip"
+                        data-tip="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -129,8 +127,8 @@ const DonorDashboardHome = () => {
                       {/* VIEW */}
                       <Link
                         to={`/dashboard/request-details/${req._id}`}
-                        className="btn btn-sm btn-info text-white tooltip tooltip-primary"
-                        data-tip = 'View'
+                        className="btn btn-sm btn-info tooltip"
+                        data-tip="View"
                       >
                         <Eye className="w-4 h-4" />
                       </Link>
@@ -141,7 +139,7 @@ const DonorDashboardHome = () => {
             </table>
           </div>
 
-          {/* View All Button */}
+          {/* View All */}
           <div className="flex justify-end mt-4">
             <Link
               to="/dashboard/my-donation-requests"

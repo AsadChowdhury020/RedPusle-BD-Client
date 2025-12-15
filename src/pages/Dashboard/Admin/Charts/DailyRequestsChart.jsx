@@ -10,7 +10,7 @@ import {
 
 const DailyRequestsChart = ({ data }) => {
   return (
-    <div className="bg-white p-6 rounded-xl shadow">
+    <div className="p-6 bg-base-100 border border-base-300 rounded-xl shadow-sm  items-center gap-4 ">
       <h3 className="text-lg font-bold text-primary mb-4">
         Daily Donation Requests (Last 7 Days)
       </h3>

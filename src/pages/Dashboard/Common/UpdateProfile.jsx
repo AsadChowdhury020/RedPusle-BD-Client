@@ -12,6 +12,7 @@ const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const UpdateProfile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   const {
     districts,
@@ -27,21 +28,14 @@ const UpdateProfile = () => {
     formState: { errors },
   } = useForm();
 
-  const [dbUser, setDbUser] = useState({});
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
-  const navigate = useNavigate()
 
-  // ✅ Fetch user from DB
+  /* Fetch user */
   useEffect(() => {
     if (!user?.email) return;
 
     const fetchUser = async () => {
-      const res = await axiosSecure.get(
-        `/users/email?email=${user.email}`
-      );
-      setDbUser(res.data);
-
-      // auto fill form
+      const res = await axiosSecure.get(`/users/email?email=${user.email}`);
       reset({
         name: res.data.name,
         email: res.data.email,
@@ -54,16 +48,15 @@ const UpdateProfile = () => {
     fetchUser();
   }, [user, axiosSecure, reset]);
 
-  // ✅ Filter upazilas when district changes
+  /* Filter upazila */
   const selectedDistrict = watch("district");
 
   useEffect(() => {
-    const selected = districts.find((d) => d.name === selectedDistrict);
-    if (selected) {
-      const filtered = upazilas.filter(
-        (u) => u.district_id === selected.id
+    const district = districts.find((d) => d.name === selectedDistrict);
+    if (district) {
+      setFilteredUpazilas(
+        upazilas.filter((u) => u.district_id === district.id)
       );
-      setFilteredUpazilas(filtered);
     } else {
       setFilteredUpazilas([]);
     }
@@ -71,24 +64,16 @@ const UpdateProfile = () => {
 
   const onSubmit = async (data) => {
     try {
-      const updateData = {
+      await axiosSecure.patch(`/users?email=${user.email}`, {
         name: data.name,
         bloodGroup: data.bloodGroup,
         district: data.district,
         upazila: data.upazila,
-      };
+      });
 
-      const res = await axiosSecure.patch(
-        `/users?email=${user.email}`,
-        updateData
-      );
-
-      if (res.data.modifiedCount > 0) {
-        Swal.fire("Success!", "Profile updated successfully", "success");
-        navigate(-1)
-      }
-    } catch (err) {
-      console.error(err);
+      Swal.fire("Success!", "Profile updated successfully", "success");
+      navigate(-1);
+    } catch {
       Swal.fire("Error", "Failed to update profile", "error");
     }
   };
@@ -97,32 +82,27 @@ const UpdateProfile = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-16">
-      <div className="w-full max-w-xl p-8 space-y-6 rounded-xl border border-secondary">
-        <h2 className="text-2xl font-bold text-center text-primary">
+      <div className="w-full max-w-xl p-8 rounded-xl bg-base-100 border border-base-300 shadow-sm">
+        <h2 className="text-2xl font-bold text-center text-primary mb-6">
           Update Your Profile
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-          {/* Name */}
           <input
-            type="text"
-            placeholder="Full Name"
             className="input input-bordered w-full"
+            placeholder="Full Name"
             {...register("name", { required: "Name is required" })}
           />
           {errors.name && (
-            <p className="text-sm text-red-500">{errors.name.message}</p>
+            <p className="text-sm text-error">{errors.name.message}</p>
           )}
 
-          {/* Email (read only) */}
           <input
-            type="email"
             readOnly
-            className="input input-bordered w-full bg-gray-100 text-gray-500 cursor-not-allowed"
+            className="input input-bordered w-full bg-base-200 text-base-content/60 cursor-not-allowed"
             {...register("email")}
           />
 
-          {/* Blood Group */}
           <select
             className="select select-bordered w-full"
             {...register("bloodGroup", { required: "Blood group is required" })}
@@ -135,7 +115,6 @@ const UpdateProfile = () => {
             ))}
           </select>
 
-          {/* District */}
           <select
             className="select select-bordered w-full"
             {...register("district", { required: "District is required" })}
@@ -148,7 +127,6 @@ const UpdateProfile = () => {
             ))}
           </select>
 
-          {/* Upazila */}
           <select
             className="select select-bordered w-full"
             {...register("upazila", { required: "Upazila is required" })}
@@ -161,7 +139,7 @@ const UpdateProfile = () => {
             ))}
           </select>
 
-          <button type="submit" className="btn btn-primary w-full mt-2">
+          <button className="btn btn-primary w-full mt-2">
             Update Profile
           </button>
         </form>

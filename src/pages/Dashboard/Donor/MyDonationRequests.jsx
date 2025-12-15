@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
-import useAxios from "../../../hooks/useAxios";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
-import { CheckCircle, Edit, Eye, Trash2, XCircle } from "lucide-react";
+import {
+  CheckCircle,
+  Edit,
+  Eye,
+  Trash2,
+  XCircle,
+} from "lucide-react";
 
 const statusOptions = ["all", "pending", "inprogress", "done", "canceled"];
 
 const MyDonationRequests = () => {
   const { user } = useAuth();
-  const axiosInstance = useAxios();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
@@ -35,7 +39,7 @@ const MyDonationRequests = () => {
     },
   });
 
-  // Filtered and paginated data
+  /* Filter + pagination */
   const filteredData =
     filterStatus === "all"
       ? requests
@@ -47,7 +51,7 @@ const MyDonationRequests = () => {
     currentPage * itemsPerPage
   );
 
-  // Handle Status Change
+  /* Status update */
   const handleStatusChange = async (id, newStatus) => {
     try {
       await axiosSecure.patch(`/donation-requests/${id}`, {
@@ -60,15 +64,13 @@ const MyDonationRequests = () => {
     }
   };
 
-  // Handle Delete
+  /* Delete */
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You are about to delete this donation request.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -90,15 +92,15 @@ const MyDonationRequests = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl text-primary font-semibold mb-4">
+    <div className="p-6 bg-base-100 border border-base-300 rounded-xl">
+      <h2 className="text-xl font-semibold text-primary mb-4">
         My Donation Requests
       </h2>
 
       {/* Filter */}
       <div className="mb-4">
         <select
-          className="select select-bordered"
+          className="select select-bordered bg-base-100 text-base-content"
           value={filterStatus}
           onChange={(e) => {
             setFilterStatus(e.target.value);
@@ -114,14 +116,14 @@ const MyDonationRequests = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto border border-secondary rounded-md">
-        <table className="table w-full border border-secondary">
+      <div className="overflow-x-auto border border-base-300 rounded-md">
+        <table className="table w-full">
           <thead>
-            <tr className="bg-base-200">
+            <tr className="bg-base-200 text-base-content">
               <th>#</th>
               <th>Recipient</th>
               <th>Location</th>
-              <th>Date </th>
+              <th>Date</th>
               <th>Time</th>
               <th>Blood</th>
               <th>Status</th>
@@ -129,16 +131,17 @@ const MyDonationRequests = () => {
               <th>Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {currentData.length === 0 ? (
               <tr>
-                <td colSpan="8" className="text-center py-4">
+                <td colSpan="9" className="text-center py-6 text-base-content/60">
                   No donation requests found.
                 </td>
               </tr>
             ) : (
               currentData.map((item, index) => (
-                <tr key={item._id}>
+                <tr key={item._id} className="text-base-content">
                   <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td>{item.recipientName}</td>
                   <td>
@@ -148,12 +151,13 @@ const MyDonationRequests = () => {
                   <td>{item.donationTime}</td>
                   <td>{item.bloodGroup}</td>
                   <td className="capitalize">{item.status}</td>
+
                   <td>
                     {item.status === "inprogress" ? (
                       <>
-                        <p>{item.donor.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {item.donor.email}
+                        <p>{item.donor?.name}</p>
+                        <p className="text-sm text-base-content/60">
+                          {item.donor?.email}
                         </p>
                       </>
                     ) : (
@@ -161,133 +165,60 @@ const MyDonationRequests = () => {
                     )}
                   </td>
 
-                  <td className="space-x-1">
-                    <div className="hidden lg:flex flex-wrap gap-1">
-                      {item.status === "inprogress" && (
-                        <>
-                          <button
-                            onClick={() => handleStatusChange(item._id, "done")}
-                            className="btn btn-sm btn-success tooltip tooltip-primary"
-                            data-tip = 'Done'
-                          >
-                            <CheckCircle className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleStatusChange(item._id, "canceled")
-                            }
-                            className="btn btn-sm btn-warning tooltip tooltip-primary"
-                            data-tip = 'Cancel'
-                          >
-                            <XCircle className="h-4 w-4" />
-                          </button>
-                        </>
-                      )}
-                      <button
-                        onClick={() =>
-                          navigate(`/dashboard/edit-request/${item._id}`)
-                        }
-                        className="btn btn-sm btn-outline tooltip tooltip-primary"
-                        data-tip = 'Edit'
-                      >
-                         <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item._id)}
-                        className="btn btn-sm btn-error text-white tooltip tooltip-primary"
-                        data-tip = 'Delete'
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() =>
-                          navigate(`/dashboard/request-details/${item._id}`)
-                        }
-                        className="btn btn-sm btn-info text-white tooltip tooltip-primary"
-                        data-tip = 'View'
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                    </div>
+                  <td className="flex flex-wrap gap-1">
+                    {item.status === "inprogress" && (
+                      <>
+                        <button
+                          onClick={() =>
+                            handleStatusChange(item._id, "done")
+                          }
+                          className="btn btn-sm btn-success tooltip"
+                          data-tip="Done"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </button>
 
-                    <div
-                      className={`dropdown dropdown-left lg:hidden ${
-                        index >= currentData.length - 2
-                          ? "dropdown-top"
-                          : "dropdown-bottom"
-                      }`}
+                        <button
+                          onClick={() =>
+                            handleStatusChange(item._id, "canceled")
+                          }
+                          className="btn btn-sm btn-warning tooltip"
+                          data-tip="Cancel"
+                        >
+                          <XCircle className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+
+                    <button
+                      onClick={() =>
+                        navigate(`/dashboard/edit-request/${item._id}`)
+                      }
+                      className="btn btn-sm btn-outline tooltip"
+                      data-tip="Edit"
                     >
-                      <div
-                        tabIndex={0}
-                        role="button"
-                        className="btn btn-xs btn-outline m-1"
-                      >
-                        Actions
-                      </div>
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
-                      >
-                        {item.status === "inprogress" && (
-                          <>
-                            <li>
-                              <button
-                                onClick={() =>
-                                  handleStatusChange(item._id, "done")
-                                }
-                                className="btn btn-sm btn-success tooltip tooltip-primary"
-                            data-tip = 'Done'
-                              >
-                                <CheckCircle className="h-4 w-4" />
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                onClick={() =>
-                                  handleStatusChange(item._id, "canceled")
-                                }
-                                className="btn btn-sm btn-warning tooltip tooltip-primary"
-                            data-tip = 'Cancel'
-                              >
-                                <XCircle className="h-4 w-4" />
-                              </button>
-                            </li>
-                          </>
-                        )}
-                        <li>
-                          {" "}
-                          <button
-                            onClick={() =>
-                              navigate(`/dashboard/edit-request/${item._id}`)
-                            }
-                            className="btn btn-sm btn-outline tooltip tooltip-primary"
-                        data-tip = 'Edit'
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                        </li>
-                        <li>
-                          <button onClick={() => handleDelete(item._id)}
-                          className="btn btn-sm btn-error text-white tooltip tooltip-primary"
-                        data-tip = 'Delete'
-                            >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </li>
-                        <li>
-                          {" "}
-                          <button
-                            onClick={() =>
-                              navigate(`/dashboard/request-details/${item._id}`)
-                            }
-                            className="btn btn-sm btn-info text-white tooltip tooltip-primary"
-                        data-tip = 'View'
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
+                      <Edit className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="btn btn-sm btn-error tooltip"
+                      data-tip="Delete"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/dashboard/request-details/${item._id}`
+                        )
+                      }
+                      className="btn btn-sm btn-info tooltip"
+                      data-tip="View"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
                   </td>
                 </tr>
               ))
@@ -298,17 +229,21 @@ const MyDonationRequests = () => {
 
       {/* Pagination */}
       <div className="mt-4 flex justify-center gap-2">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-          <button
-            key={pageNum}
-            onClick={() => setCurrentPage(pageNum)}
-            className={`btn btn-sm ${
-              pageNum === currentPage ? "btn-primary" : "btn-ghost"
-            }`}
-          >
-            {pageNum}
-          </button>
-        ))}
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+          (pageNum) => (
+            <button
+              key={pageNum}
+              onClick={() => setCurrentPage(pageNum)}
+              className={`btn btn-sm ${
+                pageNum === currentPage
+                  ? "btn-primary"
+                  : "btn-ghost"
+              }`}
+            >
+              {pageNum}
+            </button>
+          )
+        )}
       </div>
     </div>
   );

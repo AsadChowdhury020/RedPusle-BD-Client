@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
@@ -6,21 +6,20 @@ import { Dialog } from "@headlessui/react";
 import { ArrowLeft } from "lucide-react";
 import { GiConfirmed } from "react-icons/gi";
 import { BiXCircle } from "react-icons/bi";
+import { FaHandshake } from "react-icons/fa";
+
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../../components/Shared/LoadingSpinner";
-import { FaHandshake } from "react-icons/fa"
 import useAuth from "../../../../hooks/useAuth";
-import useAxios from "../../../../hooks/useAxios";
 
 const DonationRequestDetails = () => {
   const { id } = useParams();
-  const axiosSecure = useAxiosSecure();
-  const axiosInstance = useAxios();
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
-  const [isOpen, setIsOpen] = useState(false);
-
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const {
     data: request,
@@ -36,7 +35,6 @@ const DonationRequestDetails = () => {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      // return axiosInstance.patch(`/donation-requests/${id}`, {
       return axiosSecure.patch(`/donation-requests/${id}`, {
         status: "inprogress",
         donor: {
@@ -63,77 +61,66 @@ const DonationRequestDetails = () => {
     });
 
   if (isLoading) return <LoadingSpinner />;
+
   if (isError)
-    return <p className="text-center text-red-500">Failed to load request.</p>;
+    return (
+      <p className="text-center text-error mt-10">
+        Failed to load donation request.
+      </p>
+    );
 
   return (
-    <div className="max-w-3xl mx-auto p-6 rounded-lg  mt-6 border border-secondary">
-      <h2 className="text-2xl font-semibold text-primary mb-4 text-center">
+    <div className="max-w-3xl mx-auto p-6 mt-6 bg-base-100 border border-base-300 rounded-xl shadow-sm">
+      <h2 className="text-2xl font-semibold text-primary mb-6 text-center">
         Donation Request Details
       </h2>
 
-      <div className="space-y-3">
-        <p>
-          <strong>Recipient Name:</strong> {request.recipientName}
-        </p>
-        <p>
-          <strong>Blood Group:</strong> {request.bloodGroup}
-        </p>
-        <p>
-          <strong>District:</strong> {request.recipientDistrict}
-        </p>
-        <p>
-          <strong>Upazila:</strong> {request.recipientUpazila}
-        </p>
-        <p>
-          <strong>Hospital Name:</strong> {request.hospitalName}
-        </p>
-        <p>
-          <strong>Hospital Address:</strong> {request.fullAddress}
-        </p>
-        <p>
-          <strong>Date:</strong> {request.donationDate}
-        </p>
-        <p>
-          <strong>Time:</strong> {formatTime(request.donationTime)}
-        </p>
-        <p>
-          <strong>Message:</strong> {request.requestMessage}
-        </p>
-        <p>
+      {/* Details */}
+      <div className="space-y-3 text-base-content">
+        <p><strong>Recipient Name:</strong> {request.recipientName}</p>
+        <p><strong>Blood Group:</strong> {request.bloodGroup}</p>
+        <p><strong>District:</strong> {request.recipientDistrict}</p>
+        <p><strong>Upazila:</strong> {request.recipientUpazila}</p>
+        <p><strong>Hospital Name:</strong> {request.hospitalName}</p>
+        <p><strong>Hospital Address:</strong> {request.fullAddress}</p>
+        <p><strong>Date:</strong> {request.donationDate}</p>
+        <p><strong>Time:</strong> {formatTime(request.donationTime)}</p>
+        <p><strong>Message:</strong> {request.requestMessage}</p>
+        <p className="capitalize">
           <strong>Status:</strong> {request.status}
         </p>
       </div>
 
-      <div className="flex justify-between items-center mt-6">
-        {/* Back button */}
+      {/* Actions */}
+      <div className="flex justify-between items-center mt-8">
         <button
           onClick={() => navigate(-1)}
-          className="btn btn-primary flex items-center mb-4"
+          className="btn btn-outline flex items-center gap-2"
         >
-          <ArrowLeft />
-          Back
+          <ArrowLeft /> Back
         </button>
+
         {request.status === "pending" && (
-          <div className="">
-            <button onClick={() => setIsOpen(true)} className="btn btn-primary">
-              <FaHandshake />
-              Donate
-            </button>
-          </div>
+          <button
+            onClick={() => setIsOpen(true)}
+            className="btn btn-primary flex items-center gap-2"
+          >
+            <FaHandshake /> Donate
+          </button>
         )}
       </div>
 
-      {/* Modal */}
+      {/* Confirm Modal */}
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
         className="relative z-50"
       >
-        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
+
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-md bg-white rounded-lg p-6 border border-primary">
-            <Dialog.Title className="text-lg font-bold mb-4">
+          <Dialog.Panel className="w-full max-w-md bg-base-100 border border-base-300 rounded-xl p-6 shadow-lg">
+            <Dialog.Title className="text-lg font-bold text-primary mb-4">
               Confirm Donation
             </Dialog.Title>
 
@@ -145,7 +132,7 @@ const DonationRequestDetails = () => {
               className="space-y-4"
             >
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-base-content mb-1">
                   Donor Name
                 </label>
                 <input
@@ -155,8 +142,9 @@ const DonationRequestDetails = () => {
                   readOnly
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-base-content mb-1">
                   Donor Email
                 </label>
                 <input
@@ -167,18 +155,18 @@ const DonationRequestDetails = () => {
                 />
               </div>
 
-              <div className="flex justify-between items-center pt-2">
+              <div className="flex justify-between items-center pt-4">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="btn btn-primary"
+                  className="btn btn-outline flex items-center gap-1"
                 >
-                  <BiXCircle />
-                  Cancel
+                  <BiXCircle /> Cancel
                 </button>
+
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-primary flex items-center gap-1"
                   disabled={mutation.isLoading}
                 >
                   <GiConfirmed />

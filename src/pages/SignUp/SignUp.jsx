@@ -2,44 +2,36 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import useAxios from "../../hooks/useAxios";
-import saveOrUpdateUser from "../../utils/saveOrUpdateUser";
-import { FcGoogle } from "react-icons/fc";
 import useDistrictsUpazilas from "../../hooks/useDistrictsUpozilas";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
 const SignUp = () => {
-  // const { upazilasData, districtsData } = useLoaderData();
-  const { districts : districtsData, upazilas : upazilasData , loading : dataLoading } = useDistrictsUpazilas()
+  const {
+    districts: districtsData,
+    upazilas: upazilasData,
+    loading: dataLoading,
+  } = useDistrictsUpazilas();
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
+
   const [loading, setLoading] = useState(false);
-  // const [avatarURL, setAvatarURL] = useState("");
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
 
-  // const districtsList = districtsData[2].data.sort((a, b) =>
-  //   a.name.localeCompare(b.name));
-  // const upazilasList = upazilasData[2].data.sort((a, b) =>
-  //   a.name.localeCompare(b.name));
-
-  useEffect(() => {
-    setDistricts(districtsData);
-    setUpazilas(upazilasData);
-  }, [districtsData, upazilasData]);
-
-  // console.log(upazilas);
   const selectedDistrict = watch("district");
 
-  const { createUser, updateUserProfile,signInWithGoogle } = useAuth();
+  const { createUser, updateUserProfile } = useAuth();
   const axiosInstance = useAxios();
 
   const location = useLocation();
@@ -47,10 +39,16 @@ const SignUp = () => {
   const from = location.state?.from || "/";
 
   useEffect(() => {
+    setDistricts(districtsData);
+    setUpazilas(upazilasData);
+  }, [districtsData, upazilasData]);
+
+  useEffect(() => {
     const selected = districts.find((d) => d.name === selectedDistrict);
     if (selected) {
-      const filtered = upazilas.filter((u) => u.district_id === selected.id);
-      setFilteredUpazilas(filtered);
+      setFilteredUpazilas(
+        upazilas.filter((u) => u.district_id === selected.id)
+      );
     } else {
       setFilteredUpazilas([]);
     }
@@ -59,7 +57,7 @@ const SignUp = () => {
   const onSubmit = async (data) => {
     setLoading(true);
 
-    // ✅ Upload avatar inside submit
+    /* Upload avatar */
     const image = data.avatar[0];
     const formData = new FormData();
     formData.append("image", image);
@@ -68,24 +66,16 @@ const SignUp = () => {
 
     try {
       const res = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${
-          import.meta.env.VITE_image_upload_key
-        }`,
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`,
         formData
       );
       imageUrl = res.data.data.url;
-    } catch (err) {
-      console.error("Image upload failed:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Upload Failed",
-        text: "Failed to upload avatar image.",
-      });
+    } catch {
+      Swal.fire("Upload Failed", "Failed to upload avatar.", "error");
       setLoading(false);
       return;
     }
 
-    // ✅ Proceed with user creation
     try {
       await createUser(data.email, data.password);
 
@@ -101,71 +91,36 @@ const SignUp = () => {
         created_at: new Date().toISOString(),
         last_log_in: new Date().toISOString(),
       };
+
       await axiosInstance.post("/users", userInfo);
-
-      await updateUserProfile(data.name, imageUrl).then(() => {
-        navigate(from)
-      })
-
+      await updateUserProfile(data.name, imageUrl);
 
       Swal.fire({
-        title: "Account Created!",
-        text: "You have successfully signed up.",
         icon: "success",
+        title: "Account Created!",
         timer: 2000,
-        timerProgressBar: true,
         showConfirmButton: false,
       });
+
+      navigate(from);
     } catch (error) {
-      console.error("Signup error:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Signup Failed",
-        text: error.message || "Something went wrong",
-      });
+      Swal.fire(
+        "Signup Failed",
+        error.message || "Something went wrong",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // const handleGoogleSignIn = async () => {
-  //   try {
-  //     const { user } = await signInWithGoogle();
+  if (dataLoading) return <LoadingSpinner />;
 
-  //     const userData = {
-  //       name: user?.displayName,
-  //       email: user?.email,
-  //       image: user?.photoURL,
-  //     };
-
-  //     await saveOrUpdateUser(userData);
-
-  //     Swal.fire({
-  //       icon: "success",
-  //       title: "Login Successful!",
-  //       timer: 2000,
-  //       showConfirmButton: false,
-  //     });
-  //     navigate(from, { replace: true });
-  //   } catch (err) {
-  //     console.log(err);
-  //     setLoading(false);
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Google Login Failed",
-  //       text: err.message,
-  //     });
-  //   }
-  // };
-  
-  if(dataLoading){
-    return <LoadingSpinner />
-  }
   return (
-    <div className="min-h-screen flex items-center justify-center py-16">
-      <div className="w-full max-w-xl p-8 space-y-6 rounded-xl  border border-secondary">
+    <div className="min-h-screen flex items-center justify-center bg-base-200 px-4 py-16">
+      <div className="w-full max-w-xl p-8 space-y-6 rounded-xl bg-base-100 border border-base-300 shadow-sm">
         <h2 className="text-2xl font-bold text-center text-primary">
-          SignUp to RedPulseBD
+          Sign Up to RedPulseBD
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
@@ -176,7 +131,7 @@ const SignUp = () => {
             {...register("name", { required: "Name is required" })}
           />
           {errors.name && (
-            <p className="text-sm text-red-500">{errors.name.message}</p>
+            <p className="text-sm text-error">{errors.name.message}</p>
           )}
 
           <input
@@ -186,7 +141,7 @@ const SignUp = () => {
             {...register("email", { required: "Email is required" })}
           />
           {errors.email && (
-            <p className="text-sm text-red-500">{errors.email.message}</p>
+            <p className="text-sm text-error">{errors.email.message}</p>
           )}
 
           <input
@@ -195,55 +150,60 @@ const SignUp = () => {
             {...register("avatar", { required: "Avatar is required" })}
           />
           {errors.avatar && (
-            <p className="text-sm text-red-500">{errors.avatar.message}</p>
+            <p className="text-sm text-error">{errors.avatar.message}</p>
           )}
 
           <select
             className="select select-bordered w-full"
-            {...register("bloodGroup", { required: "Blood group is required" })}
+            {...register("bloodGroup", {
+              required: "Blood group is required",
+            })}
           >
-            <option className="bg-base-200" value="">Select Blood Group</option>
+            <option value="">Select Blood Group</option>
             {bloodGroups.map((bg) => (
-              <option className="bg-base-200" key={bg} value={bg}>
+              <option key={bg} value={bg}>
                 {bg}
               </option>
             ))}
           </select>
           {errors.bloodGroup && (
-            <p className="text-sm text-red-500">{errors.bloodGroup.message}</p>
+            <p className="text-sm text-error">
+              {errors.bloodGroup.message}
+            </p>
           )}
 
-          {/* District Dropdown */}
           <select
             className="select select-bordered w-full"
             {...register("district", { required: "District is required" })}
           >
-            <option className="bg-base-200" value="">Select District</option>
+            <option value="">Select District</option>
             {districts.map((d) => (
-              <option className="bg-base-200" key={d.id} value={d.name}>
+              <option key={d.id} value={d.name}>
                 {d.name}
               </option>
             ))}
           </select>
           {errors.district && (
-            <p className="text-sm text-red-500">{errors.district.message}</p>
+            <p className="text-sm text-error">
+              {errors.district.message}
+            </p>
           )}
 
-          {/* Upazila Dropdown */}
           <select
             className="select select-bordered w-full"
             {...register("upazila", { required: "Upazila is required" })}
-            // disabled={!filteredUpazilas.length}
           >
-            <option className="bg-base-200" value="">Select Upazila</option>
+            <option value="">Select Upazila</option>
             {filteredUpazilas.map((u) => (
-              <option className="bg-base-200" key={u.id} value={u.name}>
+              <option key={u.id} value={u.name}>
                 {u.name}
               </option>
             ))}
           </select>
           {errors.upazila && (
-            <p className="text-sm text-red-500">{errors.upazila.message}</p>
+            <p className="text-sm text-error">
+              {errors.upazila.message}
+            </p>
           )}
 
           <input
@@ -252,16 +212,21 @@ const SignUp = () => {
             className="input input-bordered w-full"
             {...register("password", {
               required: "Password is required",
-              minLength: { value: 6, message: "Minimum 6 characters required" },
+              minLength: {
+                value: 6,
+                message: "Minimum 6 characters required",
+              },
               pattern: {
                 value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
                 message:
-                  "Password must contain at least 1 uppercase and 1 lowercase letter",
+                  "Password must contain 1 uppercase & 1 lowercase letter",
               },
             })}
           />
           {errors.password && (
-            <p className="text-sm text-red-500">{errors.password.message}</p>
+            <p className="text-sm text-error">
+              {errors.password.message}
+            </p>
           )}
 
           <input
@@ -274,46 +239,33 @@ const SignUp = () => {
             })}
           />
           {errors.confirm_password && (
-            <p className="text-sm text-red-500">
+            <p className="text-sm text-error">
               {errors.confirm_password.message}
             </p>
           )}
 
           <button
             type="submit"
-            className="btn btn-primary w-full mt-2"
+            className="btn btn-primary w-full"
             disabled={loading}
           >
             {loading ? "Signing up..." : "Sign Up"}
           </button>
-          <p className="text-sm text-center mt-2">
+
+          <p className="text-sm text-center text-base-content/70">
             Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-blue-600 underline hover:text-blue-800"
-            >
-              Go to Log In
+            <Link to="/login" className="text-primary hover:underline">
+              Log In
             </Link>
           </p>
-          <p className="text-sm text-center">
-            Do not want to create an account now?{" "}
-            <Link
-              to="/"
-              className="text-blue-600 underline hover:text-blue-800"
-            >
-              Go to Home
+
+          <p className="text-sm text-center text-base-content/70">
+            Go back to{" "}
+            <Link to="/" className="text-primary hover:underline">
+              Home
             </Link>
           </p>
         </form>
-        {/* <h3 className="text-primary text-center text-xl font-bold">OR</h3>
-        <div
-          onClick={handleGoogleSignIn}
-          className="btn btn-primary mt-2 w-full"
-        >
-          <FcGoogle size={32} />
-
-          <p>Continue with Google</p>
-        </div> */}
       </div>
     </div>
   );

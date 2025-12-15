@@ -12,7 +12,7 @@ const HowItWorks = () => {
   return (
     <Container>
       <section className="py-16">
-        <h2 className="text-4xl text-primary font-bold text-center my-10">
+        <h2 className="text-4xl font-bold text-primary text-center my-10">
           How It Works
         </h2>
 
@@ -20,11 +20,17 @@ const HowItWorks = () => {
           {steps.map((step, idx) => (
             <div
               key={idx}
-              className="bg-white p-6 rounded-xl shadow text-center"
+              className="bg-base-100 p-6 rounded-xl border border-base-300 shadow-sm text-center hover:shadow-md transition"
             >
               <step.icon className="w-10 h-10 mx-auto text-primary mb-3" />
-              <h4 className="font-semibold">{step.title}</h4>
-              <p className="text-sm text-gray-600">{step.desc}</p>
+
+              <h4 className="font-semibold text-base-content">
+                {step.title}
+              </h4>
+
+              <p className="text-sm text-base-content/70">
+                {step.desc}
+              </p>
             </div>
           ))}
         </div>

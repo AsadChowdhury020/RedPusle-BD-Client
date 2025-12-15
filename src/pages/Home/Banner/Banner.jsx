@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import bannerBG from "../../../assets/images/BannerDeep.png";
-// import bannerBG from "../../../assets/images/BannerLight.png";
 import Container from "../../../components/Shared/Container";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import { SlMagnifierAdd } from "react-icons/sl";

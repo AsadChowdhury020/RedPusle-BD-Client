@@ -1,48 +1,59 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap");
 @import "tailwindcss";
 @plugin "daisyui";
 
-/* ---------- LIGHT THEME (BLOOD BANK RED) ---------- */
+/* ===============================
+   LIGHT THEME — BLOOD RED
+================================ */
 @plugin "daisyui/theme" {
-  name: "bloodbank-light";
+  name: "blood-light";
   default: true;
 
-  --color-primary: #D32F2F;   /* Logo Red */
-  --color-secondary: #B71C1C; /* Deep Blood Red */
-  --color-accent: #FF5252;    /* Brighter Accent Red */
+  --color-primary: #C62828;
+  --color-secondary: #B71C1C;
+  --color-accent: #EF5350;
 
-  --color-base-100: #ffffff;
-  --color-base-200: #FFF4F4;  /* Very soft medical tint */
-  --color-neutral: #1A1A1A;
+  --color-base-100: #FFF7F7;
+  --color-base-200: #FDECEC;
+  --color-base-300: #FADADA;
 
-  --rounded-box: 0.75rem;
-  --rounded-btn: 0.6rem;
-  --animation-btn: 0.25s;
+  --color-neutral: #2B1B1B;
+  --color-neutral-content: #FFFFFF;
 }
 
-/* ---------- DARK THEME (BLOOD BANK RED) ---------- */
-@plugin "daisyui/theme" {
-  name: "bloodbank-dark";
+/* ===============================
+   DARK THEME — DEEP BLOOD RED
+================================ */
+/* @plugin "daisyui/theme" {
+  name: "blood-dark";
 
-  --color-primary: #FF5A5A;   /* Soft neon glow red for dark mode */
-  --color-secondary: #8A0F20; /* Deep crimson */
-  --color-accent: #FF6A6F;    /* Warm glowing accent */
+  --color-primary: #EF5350;
+  --color-secondary: #C62828;
+  --color-accent: #FF867C;
 
   --color-base-100: #121212;
-  --color-base-200: #1E1E1E;
-  --color-neutral: #E5E5E5;
+  --color-base-200: #1A1A1A;
+  --color-base-300: #242424;
 
-  --rounded-box: 0.75rem;
-  --rounded-btn: 0.6rem;
-}
+  --color-neutral: #EDEDED;
+  --color-neutral-content: #121212;
+} */
 
-/* Custom dark variant */
-@custom-variant dark (&:where([data-theme=bloodbank-dark], [data-theme=bloodbank-dark] *));
+@plugin "daisyui/theme" {
+  name: "blood-dark";
 
-/* Fonts */
-* {
-  font-family: "Inter", sans-serif;
-}
-h1, h2, .heading {
-  font-family: "DM Serif Display", serif;
+  /* Brand */
+  --color-primary: #EF5350;
+  --color-secondary: #C62828;
+  --color-accent: #FF867C;
+
+  /* Base surfaces */
+  --color-base-100: #121212;
+  --color-base-200: #1A1A1A;
+  --color-base-300: #242424;
+
+  /* TEXT COLORS — IMPORTANT */
+  --color-base-content: #F5F5F5;   /* 🔥 THIS FIXES YOUR ISSUE */
+  --color-neutral: #EDEDED;
+  --color-neutral-content: #121212;
 }

@@ -33,12 +33,13 @@ const SafetyPrivacy = () => {
     <Container>
       <section className="py-16 bg-base-200">
         <div className="px-4">
+
           {/* Section Header */}
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-4xl font-bold text-primary">
+            <h2 className="text-4xl font-bold text-primary">
               Safety & Privacy
             </h2>
-            <p className="mt-3 text-gray-600 max-w-2xl mx-auto">
+            <p className="mt-3 max-w-2xl mx-auto text-base-content/70">
               Your safety and privacy are our top priorities. RedPulseBD follows
               strict security and verification practices.
             </p>
@@ -49,17 +50,25 @@ const SafetyPrivacy = () => {
             {safetyFeatures.map((item, index) => (
               <div
                 key={index}
-                className="bg-base-100 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition"
+                className="bg-base-100 border border-base-300 rounded-xl p-6 text-center shadow-sm hover:shadow-md transition"
               >
-                <div className="flex justify-center mb-4">{item.icon}</div>
-                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-600">{item.description}</p>
+                <div className="flex justify-center mb-4">
+                  {item.icon}
+                </div>
+
+                <h3 className="text-lg font-semibold text-base-content mb-2">
+                  {item.title}
+                </h3>
+
+                <p className="text-sm text-base-content/70">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
 
           {/* Footer Note */}
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="mt-10 text-center text-sm text-base-content/60">
             🔒 We are committed to maintaining a safe, transparent, and reliable
             blood donation platform.
           </p>

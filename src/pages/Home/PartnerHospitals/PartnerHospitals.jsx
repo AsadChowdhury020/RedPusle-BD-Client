@@ -41,30 +41,32 @@ const PartnerHospitals = () => {
     <Container>
       <section className="py-16 bg-base-200">
         <div className="px-4">
+
           {/* Section Header */}
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-4xl font-bold text-primary">
+            <h2 className="text-4xl font-bold text-primary">
               Trusted Partner Hospitals
             </h2>
-            <p className="mt-3 text-gray-600 max-w-2xl mx-auto">
+            <p className="mt-3 max-w-2xl mx-auto text-base-content/70">
               RedPulseBD is trusted by leading hospitals and medical
               institutions across Bangladesh.
             </p>
           </div>
 
-          {/* Hospital Logos Grid */}
+          {/* Hospital Logos */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center">
             {partnerHospitals.map((hospital, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center justify-center bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition"
+                className="flex flex-col items-center justify-center bg-base-100 border border-base-300 rounded-xl p-6 shadow-sm hover:shadow-md transition"
               >
                 <img
                   src={hospital.logo}
                   alt={hospital.name}
-                  className="h-16 object-contain mb-3 transition"
+                  className="h-16 object-contain mb-3 opacity-90 hover:opacity-100 transition"
                 />
-                <p className="text-sm text-center text-gray-600">
+
+                <p className="text-sm text-center text-base-content/70">
                   {hospital.name}
                 </p>
               </div>
@@ -72,7 +74,7 @@ const PartnerHospitals = () => {
           </div>
 
           {/* Trust Note */}
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="mt-10 text-center text-sm text-base-content/60">
             🤝 Partner hospitals are gradually expanding across Bangladesh.
           </p>
         </div>

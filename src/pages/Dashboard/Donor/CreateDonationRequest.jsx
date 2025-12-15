@@ -3,19 +3,22 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+
 import useAuth from "../../../hooks/useAuth";
-import useAxios from "../../../hooks/useAxios";
-import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useDistrictsUpazilas from "../../../hooks/useDistrictsUpozilas";
+import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 
 const CreateDonationRequest = () => {
   const { user, loading: authLoading } = useAuth();
-  const axiosInstance = useAxios();
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
-  // const { upazilasData, districtsData } = useLoaderData();
-  const { districts : districtsData, upazilas : upazilasData , loading : dataLoading } = useDistrictsUpazilas()
+  const {
+    districts,
+    upazilas,
+    loading: locationLoading,
+  } = useDistrictsUpazilas();
 
   const {
     register,
@@ -25,33 +28,22 @@ const CreateDonationRequest = () => {
     formState: { isSubmitting },
   } = useForm();
 
-  const [districts, setDistricts] = useState([]);
-  const [upazilas, setUpazilas] = useState([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
   const selectedDistrict = watch("recipientDistrict");
-  const navigate = useNavigate();
 
-  // const districtsList = districtsData[2].data.sort((a, b) =>
-  //   a.name.localeCompare(b.name)
-  // );
-  // const upazilasList = upazilasData[2].data.sort((a, b) =>
-  //   a.name.localeCompare(b.name)
-  // );
-
-  useEffect(() => {
-    setDistricts(districtsData);
-    setUpazilas(upazilasData);
-  }, [districtsData, upazilasData]);
-
+  /* Filter upazilas */
   useEffect(() => {
     const match = districts.find((d) => d.name === selectedDistrict);
     if (match) {
-      setFilteredUpazilas(upazilas.filter((u) => u.district_id === match.id));
+      setFilteredUpazilas(
+        upazilas.filter((u) => u.district_id === match.id)
+      );
     } else {
       setFilteredUpazilas([]);
     }
   }, [selectedDistrict, districts, upazilas]);
 
+  /* Load user info */
   const {
     data: userInfo,
     isLoading,
@@ -60,7 +52,6 @@ const CreateDonationRequest = () => {
     queryKey: ["profile", user?.email],
     enabled: !!user?.email && !authLoading,
     queryFn: async () => {
-    //   const res = await axiosInstance.get(`/users/email?email=${user.email}`);
       const res = await axiosSecure.get(`/users/email?email=${user.email}`);
       return res.data;
     },
@@ -68,7 +59,6 @@ const CreateDonationRequest = () => {
 
   const onSubmit = async (formData) => {
     try {
-      // Check if user is active
       if (!userInfo || userInfo.status === "blocked") {
         return Swal.fire(
           "Access Denied",
@@ -85,7 +75,6 @@ const CreateDonationRequest = () => {
         createdAt: new Date().toISOString(),
       };
 
-    //   await axiosInstance.post("/donation-requests", donationData);
       await axiosSecure.post("/donation-requests", donationData);
 
       Swal.fire(
@@ -93,6 +82,7 @@ const CreateDonationRequest = () => {
         "Donation request submitted successfully!",
         "success"
       );
+
       reset();
       navigate("/dashboard/my-donation-requests");
     } catch (err) {
@@ -101,14 +91,20 @@ const CreateDonationRequest = () => {
     }
   };
 
-  if (isLoading || authLoading) return <LoadingSpinner />;
+  if (isLoading || authLoading || locationLoading)
+    return <LoadingSpinner />;
+
   if (isError) {
-    return <div className="text-center mt-10">Failed to load profile.</div>;
+    return (
+      <p className="text-center mt-10 text-error">
+        Failed to load profile.
+      </p>
+    );
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-base-100 rounded-lg  mt-10 border border-secondary">
-      <h2 className="text-xl font-bold text-primary mb-6">
+    <div className="max-w-3xl mx-auto p-6 mt-10 bg-base-100 border border-base-300 rounded-xl shadow-sm">
+      <h2 className="text-2xl font-bold text-primary mb-6">
         Create Donation Request
       </h2>
 
@@ -118,20 +114,20 @@ const CreateDonationRequest = () => {
       >
         {/* Requester Info */}
         <div>
-          <label className="label">Requester Name</label>
+          <label className="label text-base-content">Requester Name</label>
           <input
             type="text"
-            className="input input-bordered w-full bg-base-200"
+            className="input input-bordered w-full bg-base-200 text-base-content/70"
             value={user.displayName}
             readOnly
           />
         </div>
 
         <div>
-          <label className="label">Requester Email</label>
+          <label className="label text-base-content">Requester Email</label>
           <input
             type="email"
-            className="input input-bordered w-full bg-base-200"
+            className="input input-bordered w-full bg-base-200 text-base-content/70"
             value={user.email}
             readOnly
           />
@@ -139,9 +135,8 @@ const CreateDonationRequest = () => {
 
         {/* Recipient Info */}
         <div>
-          <label className="label">Recipient Name</label>
+          <label className="label text-base-content">Recipient Name</label>
           <input
-            type="text"
             {...register("recipientName", { required: true })}
             className="input input-bordered w-full"
             placeholder="Enter recipient name"
@@ -149,7 +144,7 @@ const CreateDonationRequest = () => {
         </div>
 
         <div>
-          <label className="label">Recipient District</label>
+          <label className="label text-base-content">Recipient District</label>
           <select
             {...register("recipientDistrict", { required: true })}
             className="select select-bordered w-full"
@@ -164,7 +159,7 @@ const CreateDonationRequest = () => {
         </div>
 
         <div>
-          <label className="label">Recipient Upazila</label>
+          <label className="label text-base-content">Recipient Upazila</label>
           <select
             {...register("recipientUpazila", { required: true })}
             className="select select-bordered w-full"
@@ -179,9 +174,8 @@ const CreateDonationRequest = () => {
         </div>
 
         <div className="lg:col-span-2">
-          <label className="label">Hospital Name</label>
+          <label className="label text-base-content">Hospital Name</label>
           <input
-            type="text"
             {...register("hospitalName", { required: true })}
             className="input input-bordered w-full"
             placeholder="Enter hospital name"
@@ -189,9 +183,8 @@ const CreateDonationRequest = () => {
         </div>
 
         <div className="lg:col-span-2">
-          <label className="label">Full Address</label>
+          <label className="label text-base-content">Full Address</label>
           <input
-            type="text"
             {...register("fullAddress", { required: true })}
             className="input input-bordered w-full"
             placeholder="Example: Zahir Raihan Rd, Dhaka"
@@ -199,22 +192,24 @@ const CreateDonationRequest = () => {
         </div>
 
         <div>
-          <label className="label">Blood Group</label>
+          <label className="label text-base-content">Blood Group</label>
           <select
             {...register("bloodGroup", { required: true })}
             className="select select-bordered w-full"
           >
             <option value="">Select</option>
-            {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((group) => (
-              <option key={group} value={group}>
-                {group}
-              </option>
-            ))}
+            {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
+              (group) => (
+                <option key={group} value={group}>
+                  {group}
+                </option>
+              )
+            )}
           </select>
         </div>
 
         <div>
-          <label className="label">Donation Date</label>
+          <label className="label text-base-content">Donation Date</label>
           <input
             type="date"
             {...register("donationDate", { required: true })}
@@ -223,7 +218,7 @@ const CreateDonationRequest = () => {
         </div>
 
         <div className="lg:col-span-2">
-          <label className="label">Donation Time</label>
+          <label className="label text-base-content">Donation Time</label>
           <input
             type="time"
             {...register("donationTime", { required: true })}
@@ -232,7 +227,7 @@ const CreateDonationRequest = () => {
         </div>
 
         <div className="lg:col-span-2">
-          <label className="label">Request Message</label>
+          <label className="label text-base-content">Request Message</label>
           <textarea
             {...register("requestMessage", { required: true })}
             className="textarea textarea-bordered w-full"
