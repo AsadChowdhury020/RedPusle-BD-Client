@@ -18,24 +18,24 @@ const Reviews = () => {
   };
 
   return (
-    <div className="pt-16 bg-base-200">
-      <div className="flex justify-between items-center px-6 lg:px-16 mb-10">
-  <h1 className="text-4xl font-bold text-primary">
-    What People Say About RedPulseBD
-  </h1>
+    <div className="pt-16 bg-base-200 min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center px-6 lg:px-16 mb-10 gap-4">
+        <h1 className="text-4xl font-bold text-primary">
+          What People Say About RedPulseBD
+        </h1>
 
-  <button className="btn btn-primary text-black" onClick={openModal}>
-    Write a Review
-  </button>
-</div>
-
+        <button className="btn btn-primary" onClick={openModal}>
+          Write a Review
+        </button>
+      </div>
 
       {/* Reviews Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-6 lg:px-16">
         {reviews.map((review) => (
           <div
             key={review.id}
-            className="bg-base-100 shadow-lg p-6 rounded-xl hover:scale-105 transition-transform duration-300"
+            className="bg-base-100 border border-base-300 shadow-sm p-6 rounded-xl hover:shadow-md transition"
           >
             <div className="flex items-center gap-4">
               <img
@@ -43,13 +43,14 @@ const Reviews = () => {
                 alt={review.name}
                 className="w-16 h-16 rounded-full object-cover border-2 border-primary"
               />
+
               <div>
-                <h3 className="text-xl font-semibold text-neutral">
+                <h3 className="text-xl font-semibold text-base-content">
                   {review.name}
                 </h3>
 
                 {/* Ratings */}
-                <div className="flex text-yellow-500">
+                <div className="flex text-warning mt-1">
                   {[...Array(review.rating)].map((_, i) => (
                     <FaStar key={i} />
                   ))}
@@ -57,7 +58,9 @@ const Reviews = () => {
               </div>
             </div>
 
-            <p className="mt-4 text-sm text-neutral">{review.description}</p>
+            <p className="mt-4 text-sm text-base-content/70">
+              {review.description}
+            </p>
           </div>
         ))}
       </div>

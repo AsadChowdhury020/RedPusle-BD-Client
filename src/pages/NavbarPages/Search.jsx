@@ -9,9 +9,13 @@ const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const Search = () => {
   const axiosInstance = useAxios();
-  const { districts : districtsData, upazilas : upazilasData , loading : dataLoading } = useDistrictsUpazilas()
-  const [ afterSearch, setAfterSearch] = useState(false)
+  const {
+    districts: districtsData,
+    upazilas: upazilasData,
+    loading: dataLoading,
+  } = useDistrictsUpazilas();
 
+  const [afterSearch, setAfterSearch] = useState(false);
 
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
@@ -25,7 +29,7 @@ const Search = () => {
 
   const [submitted, setSubmitted] = useState(false);
 
-  // Pagination state
+  /* Pagination */
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -36,11 +40,11 @@ const Search = () => {
 
   useEffect(() => {
     const selectedDistrict = searchData.district;
-    const districtMatch = districts.find((d) => d.name === selectedDistrict);
+    const match = districts.find((d) => d.name === selectedDistrict);
 
-    if (districtMatch) {
+    if (match) {
       setFilteredUpazilas(
-        upazilas.filter((u) => u.district_id === districtMatch.id)
+        upazilas.filter((u) => u.district_id === match.id)
       );
     } else {
       setFilteredUpazilas([]);
@@ -65,39 +69,38 @@ const Search = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
-    setCurrentPage(1); // reset pagination on new search
+    setCurrentPage(1);
     refetch();
-    setAfterSearch(true)
-
+    setAfterSearch(true);
   };
 
-  //  Pagination Logic
+  /* Pagination logic */
   const totalPages = Math.ceil(donors.length / itemsPerPage);
   const currentData = donors.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  if(dataLoading){
-    return <LoadingSpinner />
-  }
+  if (dataLoading) return <LoadingSpinner />;
 
   return (
     <Container>
-      <div className="max-w-7xl mx-auto p-6 my-16 bg-base-200">
-        <h2 className="text-4xl font-bold text-primary text-center mb-5">
+      <div className="max-w-7xl mx-auto p-6 my-16 bg-base-200 rounded-xl">
+        <h2 className="text-4xl font-bold text-primary text-center mb-6">
           Search Blood Donors
         </h2>
 
         {/* Search Form */}
         <form
           onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-base-100 border border-primary p-10 rounded-xl"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-base-100 border border-base-300 p-6 rounded-xl"
         >
           <div>
-            <label className="label font-semibold">Blood Group</label>
+            <label className="label text-base-content font-semibold">
+              Blood Group
+            </label>
             <select
-              className="select select-bordered"
+              className="select select-bordered w-full"
               value={searchData.bloodGroup}
               onChange={(e) =>
                 setSearchData({ ...searchData, bloodGroup: e.target.value })
@@ -114,9 +117,11 @@ const Search = () => {
           </div>
 
           <div>
-            <label className="label font-semibold">District</label>
+            <label className="label text-base-content font-semibold">
+              District
+            </label>
             <select
-              className="select select-bordered"
+              className="select select-bordered w-full"
               value={searchData.district}
               onChange={(e) =>
                 setSearchData({ ...searchData, district: e.target.value })
@@ -133,9 +138,11 @@ const Search = () => {
           </div>
 
           <div>
-            <label className="label font-semibold">Upazila</label>
+            <label className="label text-base-content font-semibold">
+              Upazila
+            </label>
             <select
-              className="select select-bordered"
+              className="select select-bordered w-full"
               value={searchData.upazila}
               onChange={(e) =>
                 setSearchData({ ...searchData, upazila: e.target.value })
@@ -158,29 +165,32 @@ const Search = () => {
           </div>
         </form>
 
-        {/* Results Section */}
+        {/* Results */}
         <div className="mt-6">
           {!submitted && (
-            <p className="text-gray-500 text-center">
+            <p className="text-center text-base-content/60">
               Fill the form and click search to see donor results.
             </p>
           )}
 
           {submitted && isFetching && (
-            <div className="text-center text-primary">Loading donors...</div>
+            <p className="text-center text-primary">
+              Loading donors...
+            </p>
           )}
 
           {submitted && !isFetching && donors.length === 0 && (
-            <p className="text-center text-gray-500">No donors found.</p>
+            <p className="text-center text-base-content/60">
+              No donors found.
+            </p>
           )}
 
-          {/* Table View with Pagination */}
           {currentData.length > 0 && (
             <>
-              <div className="overflow-x-auto border border-secondary rounded-md mt-4">
+              <div className="overflow-x-auto border border-base-300 rounded-md mt-4 bg-base-100">
                 <table className="table w-full">
-                  <thead>
-                    <tr className="bg-base-200">
+                  <thead className="bg-base-200 text-base-content">
+                    <tr>
                       <th>#</th>
                       <th>Name</th>
                       <th>Blood Group</th>
@@ -191,25 +201,29 @@ const Search = () => {
 
                   <tbody>
                     {currentData.map((donor, index) => (
-                      <tr key={donor._id}>
+                      <tr key={donor._id} className="text-base-content">
                         <td>
                           {(currentPage - 1) * itemsPerPage + index + 1}
                         </td>
-                        <td className="font-semibold">{donor.name}</td>
-                        <td className="text-primary font-bold">
+                        <td className="font-semibold">
+                          {donor.name}
+                        </td>
+                        <td className="font-bold text-primary">
                           {donor.bloodGroup}
                         </td>
                         <td>
                           {donor.upazila}, {donor.district}
                         </td>
-                        <td className="capitalize">{donor.status}</td>
+                        <td className="capitalize">
+                          {donor.status}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              {/* ⭐ Pagination Buttons */}
+              {/* Pagination */}
               <div className="flex justify-center gap-2 mt-4">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                   (pageNum) => (

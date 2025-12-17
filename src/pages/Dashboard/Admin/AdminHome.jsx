@@ -40,7 +40,7 @@ const AdminHome = () => {
     };
 
     fetchStats();
-  }, [axiosSecure]);
+  }, [axiosSecure, getTotalFund]);
 
   /* Charts */
   const [chartData, setChartData] = useState({

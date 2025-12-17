@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import {
-  Mail,
-  User,
-  Edit,
-  Lock,
-  Droplet,
-  MapPin,
-} from "lucide-react";
+import { Mail, User, Edit, Lock, Droplet, MapPin } from "lucide-react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 
@@ -52,8 +45,12 @@ const Profile = () => {
             {user?.email}
           </p>
 
-          <span className="inline-block mt-3 px-4 py-1 rounded-full bg-primary text-primary-content text-sm">
+          {/* <span className="inline-block mt-3 px-4 py-1 rounded-full bg-primary text-primary-content text-sm">
             {dbUser?.role}
+          </span> */}
+
+          <span className="inline-block mt-3 px-4 py-1 rounded-full bg-primary text-primary-content text-sm">
+            {dbUser?.role?.charAt(0).toUpperCase() + dbUser?.role?.slice(1)}
           </span>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">

@@ -14,6 +14,7 @@ import AdminMenu from "./Menu/AdminMenu";
 import VolunteerMenu from "./Menu/VolunteerMenu";
 import DonorMenu from "./Menu/DonorMenu";
 import useUserRole from "../../../hooks/useUserRole";
+import ThemeToggle from "../../../ThemeToggle/ThemeToggle";
 
 const Sidebar = () => {
   const { logOut } = useAuth();
@@ -58,6 +59,7 @@ const Sidebar = () => {
 
           {/* Menu */}
           <div className="flex-1">
+            {/* <ThemeToggle></ThemeToggle> */}
             <nav className="space-y-1">
               {role === "admin" && <AdminMenu />}
               {role === "donor" && <DonorMenu />}
@@ -67,6 +69,7 @@ const Sidebar = () => {
 
           {/* Bottom */}
           <div className="pt-4 border-t border-base-300">
+            <ThemeToggle/>
             <MenuItem
               icon={FcSettings}
               label="Profile"

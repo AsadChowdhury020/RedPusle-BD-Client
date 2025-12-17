@@ -24,23 +24,10 @@
 /* ===============================
    DARK THEME — DEEP BLOOD RED
 ================================ */
-/* @plugin "daisyui/theme" {
-  name: "blood-dark";
-
-  --color-primary: #EF5350;
-  --color-secondary: #C62828;
-  --color-accent: #FF867C;
-
-  --color-base-100: #121212;
-  --color-base-200: #1A1A1A;
-  --color-base-300: #242424;
-
-  --color-neutral: #EDEDED;
-  --color-neutral-content: #121212;
-} */
 
 @plugin "daisyui/theme" {
   name: "blood-dark";
+  /* default: false; */
 
   /* Brand */
   --color-primary: #EF5350;
@@ -53,7 +40,7 @@
   --color-base-300: #242424;
 
   /* TEXT COLORS — IMPORTANT */
-  --color-base-content: #F5F5F5;   /* 🔥 THIS FIXES YOUR ISSUE */
+  --color-base-content: #F5F5F5;   
   --color-neutral: #EDEDED;
   --color-neutral-content: #121212;
 }

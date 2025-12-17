@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import { Link } from "react-router";
 import useAxios from "../../hooks/useAxios";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
@@ -10,7 +9,6 @@ import { TfiWrite } from "react-icons/tfi";
 
 const Blogs = () => {
   const axiosInstance = useAxios();
-  const [searchText, setSearchText] = useState("");
 
   const {
     data: blogs = [],
@@ -24,13 +22,11 @@ const Blogs = () => {
     },
   });
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
   if (isError) {
     return (
-      <p className="text-center text-primary py-10">
+      <p className="text-center text-error py-10">
         Failed to load blogs. Please try again.
       </p>
     );
@@ -38,22 +34,21 @@ const Blogs = () => {
 
   return (
     <Container>
-      <div className=" py-16">
-        <div className="flex justify-between items-center mb-10">
-          <h1 className="text-4xl font-bold mb-6 text-primary">
-            All Blood Donation Related Blogs
+      <div className="py-16">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+          <h1 className="text-4xl font-bold text-primary">
+            Blood Donation Related Blogs
           </h1>
-          {/* <Link to='/create-blog' className="btn btn-primary">
-            Add a Blog <TfiWrite />
-          </Link> */}
-          <Link to={"/create-blog"} className="btn btn-primary">
+
+          <Link to="/create-blog" className="btn btn-primary">
             Add a Blog <TfiWrite />
           </Link>
         </div>
 
         {/* Blog Cards */}
         {blogs.length === 0 ? (
-          <p className="text-center text-gray-500 dark:text-gray-300">
+          <p className="text-center text-base-content/60">
             No blogs found.
           </p>
         ) : (
@@ -61,29 +56,34 @@ const Blogs = () => {
             {blogs.map((blog) => (
               <div
                 key={blog._id}
-                className="border border-primary rounded-xl p-2 hover:scale-105 transition-transform duration-300"
+                className="bg-base-100 border border-base-300 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition"
               >
                 <img
                   src={blog.thumbnail}
                   alt={blog.title}
-                  className="w-full rounded-xl h-60 object-cover"
+                  className="w-full h-60 object-cover"
                 />
+
                 <div className="p-4">
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-400 mb-2">
+                  <h2 className="text-lg font-semibold text-base-content mb-2">
                     {blog.title}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
-                    {/* Optionally show part of content as a preview */}
-                    {blog.content.replace(/<[^>]+>/g, "").slice(0, 100)}...
+
+                  <p className="text-sm text-base-content/70 line-clamp-3 mb-4">
+                    {blog.content
+                      .replace(/<[^>]+>/g, "")
+                      .slice(0, 100)}
+                    ...
                   </p>
-                  <span className="flex justify-end">
+
+                  <div className="flex justify-end">
                     <Link
                       to={`/blog-details/${blog._id}`}
-                      className="btn btn-primary"
+                      className="btn btn-primary btn-sm"
                     >
                       Details <FaArrowRight />
                     </Link>
-                  </span>
+                  </div>
                 </div>
               </div>
             ))}

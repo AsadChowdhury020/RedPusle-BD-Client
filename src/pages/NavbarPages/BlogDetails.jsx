@@ -24,41 +24,82 @@ const BlogDetails = () => {
   });
 
   if (isLoading) return <LoadingSpinner />;
+
   if (isError)
-    return <p className="text-center text-red-500">Blog not found.</p>;
+    return (
+      <p className="text-center text-error py-10">
+        Blog not found.
+      </p>
+    );
 
   return (
     <Container>
-      <div className="py-16 bg-base-200 ">
-        {/* Blog Thumbnail */}
-        <img
-          src={blog.thumbnail}
-          alt={blog.title}
-          className="w-full h-100 object-cover rounded-lg mb-6"
-        />
+      <div className="py-16">
 
-        {/* Title */}
-        <h1 className="text-4xl font-bold mb-4 text-primary">{blog.title}</h1>
+        {/* Blog Card */}
+        <div className="bg-base-100 border border-base-300 rounded-xl p-6 shadow-sm">
 
-        {/* Blog Content */}
-        <div
-          className="prose max-w-none text-gray-700 dark:text-gray-400 lg:pb-5 md:pb-3 pb-2"
-          dangerouslySetInnerHTML={{ __html: blog.content }}
-        />
-        <p><span className="text-lg font-bold text-primary">Posted by: </span> {blog.author}</p>
-        <p><span className="text-lg font-bold text-primary">Email: </span>{blog.postedByEmail}</p>
-        <p><span className="text-lg font-bold text-primary">Status: </span> {blog.status}</p>
-        <p><span className="text-lg font-bold text-primary">Posted On: </span> {new Date(blog.createdAt).toISOString().split("T")[0]}</p>
+          {/* Thumbnail */}
+          <img
+            src={blog.thumbnail}
+            alt={blog.title}
+            className="w-full h-[420px] object-cover rounded-lg mb-6"
+          />
+
+          {/* Title */}
+          <h1 className="text-4xl font-bold mb-4 text-primary">
+            {blog.title}
+          </h1>
+
+          {/* Content */}
+          <div
+            className="prose prose-base-content max-w-none pb-6"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+          />
+
+          {/* Meta Info */}
+          <div className="space-y-1 text-base-content">
+            <p>
+              <span className="font-semibold text-primary">
+                Posted by:
+              </span>{" "}
+              {blog.author}
+            </p>
+
+            <p>
+              <span className="font-semibold text-primary">
+                Email:
+              </span>{" "}
+              {blog.postedByEmail}
+            </p>
+
+            <p>
+              <span className="font-semibold text-primary">
+                Status:
+              </span>{" "}
+              {blog.status}
+            </p>
+
+            <p>
+              <span className="font-semibold text-primary">
+                Posted On:
+              </span>{" "}
+              {new Date(blog.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+
+          {/* Back Button */}
+          <div className="mt-6">
+            <button
+              onClick={() => navigate(-1)}
+              className="btn btn-outline flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="btn btn-primary"
-        >
-          <ArrowLeft className="w-4 h-4 mr-1" />
-          Back
-        </button>
     </Container>
   );
 };
